@@ -3,78 +3,7 @@
 //
 #include "util.h"
 
-void keyboardListener(unsigned char key, int x, int y) {
-
-    switch (key) {
-        case '1':
-            break;
-
-        default:
-            break;
-    }
-
-}
-
-
-void specialKeyListener(int key, int x, int y) {
-
-    switch (key) {
-
-        case GLUT_KEY_DOWN:
-            break;
-        case GLUT_KEY_UP:
-            break;
-
-        case GLUT_KEY_RIGHT:
-            break;
-        case GLUT_KEY_LEFT:
-            break;
-
-            /* case GLUT_KEY_PAGE_UP:
-                break;
-            case GLUT_KEY_PAGE_DOWN:
-                break;
-
-            case GLUT_KEY_INSERT:
-                break;
-
-            case GLUT_KEY_HOME:
-                break;
-            case GLUT_KEY_END:
-                break;
-
-            default:
-                break;
-            */
-    }
-
-}
-
-
-void mouseListener(int button, int state, int x, int y) {    //x, y is the x-y of the screen (2D)
-
-    switch (button) {
-        case GLUT_LEFT_BUTTON:
-            if (state == GLUT_DOWN) {        // 2 times?? in ONE click? -- solution is checking DOWN or UP
-            }
-            break;
-
-        case GLUT_RIGHT_BUTTON:
-            //........
-            break;
-
-        case GLUT_MIDDLE_BUTTON:
-            //........
-            break;
-
-        default:
-            break;
-    }
-}
-
-
 void init() {
-
 
     //clear the screen
     clearDisplay();
@@ -97,8 +26,7 @@ void init() {
 }
 
 void animate() {
-    // TODO:
-    //what you want to do in the idle time (when no drawing is occuring)
+    // TODO: what you want to do in the idle time (when no drawing is occuring)
     glutPostRedisplay();
 }
 
@@ -154,12 +82,12 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutIdleFunc(animate);
 
-    glutKeyboardFunc(keyboardListener);
-    glutSpecialFunc(specialKeyListener);
-    glutMouseFunc(mouseListener);
+    // TODO: register listeners here
 
     glutMainLoop();        //The main loop of OpenGL
 
     return 0;
 }
+
+
 

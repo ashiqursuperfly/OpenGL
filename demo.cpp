@@ -213,9 +213,9 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);    //display callback function
     glutIdleFunc(animate);        //what you want to do in the idle time (when no drawing is occuring)
 
-    glutKeyboardFunc(keyboardListener);
-    glutSpecialFunc(specialKeyListener);
-    glutMouseFunc(mouseListener);
+    registerKeyboardListener(keyboardListener);
+    registerSpecialKeysListener(specialKeyListener);
+    registerMouseListener(mouseListener);
 
     glutMainLoop();        //The main loop of OpenGL
 
