@@ -12,9 +12,9 @@ public:
     Camera() {
 
         pos = Vector();
-        pos.x = 0;
-        pos.y = 0;
-        pos.z = 0;
+        pos.x = 150;
+        pos.y = 150;
+        pos.z = 50;
 
         u.x = 0;
         u.y = 0;
@@ -49,26 +49,32 @@ void specialKeyListener(int key, int x, int y) {
 
         case GLUT_KEY_DOWN:
             camera.pos = camera.pos.sum(camera.l.negate());
+            camera.print();
             break;
 
         case GLUT_KEY_UP:
             camera.pos = camera.pos.sum(camera.l);
+            camera.print();
             break;
 
         case GLUT_KEY_RIGHT:
             camera.pos = camera.pos.sum(camera.r);
+            camera.print();
             break;
 
         case GLUT_KEY_LEFT:
             camera.pos = camera.pos.sum(camera.r.negate());
+            camera.print();
             break;
 
         case GLUT_KEY_PAGE_UP:
             camera.pos = camera.pos.sum(camera.u);
+            camera.print();
             break;
 
         case GLUT_KEY_PAGE_DOWN:
             camera.pos = camera.pos.sum(camera.u.negate());
+            camera.print();
             break;
 
         /*
