@@ -50,14 +50,18 @@ void display() {
 
     //gluLookAt(100,100,100,	0,0,0,	0,0,1);
     //gluLookAt(200*cos(cameraAngle), 200*sin(cameraAngle), cameraHeight,		0,0,0,		0,0,1);
-    gluLookAt(0, 0, 200, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 1000, 0, 0, 0, 0, 1, 0);
 
 
     //again select MODEL-VIEW
     glMatrixMode(GL_MODELVIEW);
 
+    glColor3f(0.0, 1.0, 0.0);
     drawAxes();
+    glColor3f(1.0, 1.0, 1.0);
     drawGrid();
+    glColor3f(1.0, 0.0, 0.0);
+    drawSphere(50, 30, 50);
 
     // TODO: draw objects here
 
