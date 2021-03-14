@@ -9,12 +9,53 @@
 
 #include<cmath>
 #include <GL/glut.h>
+#include <iostream>
 
 #define pi (2*acos(0.0))
 
-struct point {
+class Vector {
+public:
     double x, y, z;
+
+    Vector sum(Vector rhs) const {
+
+        Vector res;
+
+        res.x = x + rhs.x;
+        res.y = y + rhs.y;
+        res.z = z + rhs.z;
+
+        return res;
+    }
+
+    Vector negate() const {
+
+        Vector res;
+
+        res.x = -x;
+        res.y = -y;
+        res.z = -z;
+
+        return res;
+    }
+
+    Vector cross(Vector rhs) const {
+
+        Vector res;
+
+        res.x = y * rhs.z - z * rhs.y;
+        res.y = z * rhs.x - x * rhs.z;
+        res.z = x * rhs.y - y * rhs.x;
+
+        return res;
+
+    }
+
+    void print() const {
+        std::cout<<"( "<<x<<","<<y<<","<<z<<" )"<<std::endl;
+    }
 };
+
 
 
 void drawAxes() {
@@ -86,7 +127,7 @@ void drawSquare(double a) {
 void drawCircle(double radius, int segments) {
 
     int i;
-    struct point points[100];
+    Vector points[100];
 
     //generate points
     for (i = 0; i <= segments; i++) {
@@ -110,7 +151,7 @@ void drawCone(double radius, double height, int segments) {
 
     int i;
     double shade;
-    struct point points[100];
+    Vector points[100];
 
     //generate points
     for (i = 0; i <= segments; i++) {
@@ -139,7 +180,7 @@ void drawCone(double radius, double height, int segments) {
 
 void drawSphere(double radius, int slices, int stacks) {
 
-    struct point points[100][100];
+    Vector points[100][100];
     int i, j;
     double h, r;
 
@@ -227,23 +268,23 @@ void specialKeyListener(int key, int x, int y) {
         case GLUT_KEY_LEFT:
             break;
 
-            */
-/* case GLUT_KEY_PAGE_UP:
-                break;
-            case GLUT_KEY_PAGE_DOWN:
-                break;
 
-            case GLUT_KEY_INSERT:
-                break;
+        case GLUT_KEY_PAGE_UP:
+            break;
+        case GLUT_KEY_PAGE_DOWN:
+            break;
 
-            case GLUT_KEY_HOME:
-                break;
-            case GLUT_KEY_END:
-                break;
+        case GLUT_KEY_INSERT:
+            break;
 
-            default:
-                break;
-            *//*
+        case GLUT_KEY_HOME:
+            break;
+        case GLUT_KEY_END:
+            break;
+
+        default:
+            break;
+
 
     }
 

@@ -3,6 +3,91 @@
 //
 #include "util.h"
 
+class Camera {
+public:
+
+    Vector pos;
+    Vector u, r, l;
+
+    Camera() {
+
+        pos = Vector();
+        pos.x = 0;
+        pos.y = 0;
+        pos.z = 0;
+
+        u.x = 0;
+        u.y = 0;
+        u.z = 1;
+
+        r.x = -1 / sqrt(2.0);
+        r.y = 1 / sqrt(2.0);
+        r.z = 0;
+
+        l = u.cross(r);
+
+        print();
+    }
+
+    void print() const {
+        std::cout<<"Pos:";
+        pos.print();
+        std::cout<<"l:";
+        l.print();
+        std::cout<<"r:";
+        r.print();
+        std::cout<<"u:";
+        u.print();
+    }
+};
+
+Camera camera;
+
+void specialKeyListener(int key, int x, int y) {
+
+    switch (key) {
+
+        case GLUT_KEY_DOWN:
+            camera.pos = camera.pos.sum(camera.l.negate());
+            break;
+
+        case GLUT_KEY_UP:
+            camera.pos = camera.pos.sum(camera.l);
+            break;
+
+        case GLUT_KEY_RIGHT:
+            camera.pos = camera.pos.sum(camera.r);
+            break;
+
+        case GLUT_KEY_LEFT:
+            camera.pos = camera.pos.sum(camera.r.negate());
+            break;
+
+        case GLUT_KEY_PAGE_UP:
+            camera.pos = camera.pos.sum(camera.u);
+            break;
+
+        case GLUT_KEY_PAGE_DOWN:
+            camera.pos = camera.pos.sum(camera.u.negate());
+            break;
+
+        /*
+            case GLUT_KEY_INSERT:
+                break;
+
+            case GLUT_KEY_HOME:
+                break;
+            case GLUT_KEY_END:
+                break;
+        */
+
+        default:
+            break;
+
+    }
+
+}
+
 void init() {
 
     //clear the screen
@@ -50,7 +135,7 @@ void display() {
 
     //gluLookAt(100,100,100,	0,0,0,	0,0,1);
     //gluLookAt(200*cos(cameraAngle), 200*sin(cameraAngle), cameraHeight,		0,0,0,		0,0,1);
-    gluLookAt(0, 0, 1000, 0, 0, 0, 0, 1, 0);
+    gluLookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.x + camera.l.x, camera.pos.y + camera.l.y, camera.pos.z + camera.l.z, camera.u.x, camera.u.y, camera.u.z);
 
 
     //again select MODEL-VIEW
@@ -87,6 +172,7 @@ int main(int argc, char **argv) {
     glutIdleFunc(animate);
 
     // TODO: register listeners here
+    registerSpecialKeysListener(specialKeyListener);
 
     glutMainLoop();        //The main loop of OpenGL
 
