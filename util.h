@@ -17,7 +17,7 @@ class Vector {
 public:
     double x, y, z;
 
-    Vector sum(Vector rhs) const {
+    Vector operator+ (Vector const &rhs) const {
 
         Vector res;
 
@@ -28,7 +28,18 @@ public:
         return res;
     }
 
-    Vector negate() const {
+    Vector operator- (Vector const &rhs) const {
+
+        Vector res;
+
+        res.x = x - rhs.x;
+        res.y = y - rhs.y;
+        res.z = z - rhs.z;
+
+        return res;
+    }
+
+    Vector operator- () const {
 
         Vector res;
 
@@ -39,7 +50,7 @@ public:
         return res;
     }
 
-    Vector cross(Vector rhs) const {
+    Vector operator* (Vector const & rhs) const {
 
         Vector res;
 
@@ -51,6 +62,35 @@ public:
 
     }
 
+    Vector operator* (double scalar) const {
+
+        Vector a;
+
+        if (scalar != 0){
+            a.x = x * scalar;
+            a.y = y * scalar;
+            a.z = z * scalar;
+        }
+
+        return a;
+    }
+
+
+    Vector rotate(Vector const & axis, double angleDegrees)
+    {
+        //rotate this vector with respect to an axis
+        Vector crossProduct = axis * (*this);
+
+        // r1 = lxCost , lyCost
+        // r2 = rxSint , rySint
+        // res = (lxCost + rxSint) , (lyCost + rySint)
+
+        Vector r1 = (*this) * cos(angleDegrees * pi / 180);
+        Vector r2 = crossProduct * sin(angleDegrees * pi / 180.0);
+
+        return r1 + r2;
+    }
+
     void print() const {
         std::cout<<"( "<<x<<","<<y<<","<<z<<" )"<<std::endl;
     }
@@ -58,20 +98,26 @@ public:
 
 
 
-void drawAxes() {
+void drawAxes(int len) {
 
 
     glBegin(GL_LINES);
 
     {
-        glVertex3f(100, 0, 0);
-        glVertex3f(-100, 0, 0);
+        // x-axis
+        glColor3f(1.0, 0.0, 0.0);
+        glVertex3f(len, 0, 0);
+        glVertex3f(-len, 0, 0);
 
-        glVertex3f(0, -100, 0);
-        glVertex3f(0, 100, 0);
+        // y-axis
+        glColor3f(0.0, 1.0, 0.0);
+        glVertex3f(0, -len, 0);
+        glVertex3f(0, len, 0);
 
-        glVertex3f(0, 0, 100);
-        glVertex3f(0, 0, -100);
+        // z-axis
+        glColor3f(0.0, 0.0, 1.0);
+        glVertex3f(0, 0, len);
+        glVertex3f(0, 0, -len);
     }
 
     glEnd();
@@ -80,25 +126,25 @@ void drawAxes() {
 }
 
 
-void drawGrid() {
+void drawGrid(int lines, int len, int spacing) {
 
     int i;
 
     glBegin(GL_LINES);
 
     {
-        for (i = -8; i <= 8; i++) {
+        for (i = -lines; i <= lines; i++) {
 
             if (i == 0)
                 continue;    //SKIP the MAIN axes
 
             //lines parallel to Y-axis
-            glVertex3f(i * 10, -90, 0);
-            glVertex3f(i * 10, 90, 0);
+            glVertex3f(i * spacing, -len, 0);
+            glVertex3f(i * spacing, len, 0);
 
             //lines parallel to X-axis
-            glVertex3f(-90, i * 10, 0);
-            glVertex3f(90, i * 10, 0);
+            glVertex3f(-len, i * spacing, 0);
+            glVertex3f(len, i * spacing, 0);
         }
     }
 

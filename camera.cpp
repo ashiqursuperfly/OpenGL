@@ -24,7 +24,7 @@ public:
         r.y = 1 / sqrt(2.0);
         r.z = 0;
 
-        l = u.cross(r);
+        l = u * r;
 
         print();
     }
@@ -43,49 +43,77 @@ public:
 
 Camera camera;
 
+void keyboardListener(unsigned char key, int x, int y) {
+
+    switch (key) {
+
+        case '1':
+            camera.l = camera.l.rotate(camera.u, 3.0);
+            camera.r = camera.l * camera.u;
+            camera.print();
+            break;
+        case '2':
+            camera.l = camera.l.rotate(camera.u, -3.0);
+            camera.r = camera.l * camera.u;
+            camera.print();
+            break;
+        case '3':
+            camera.l = camera.l.rotate(camera.r, 3.0);
+            camera.u = camera.r * camera.l;
+            camera.print();
+            break;
+        case '4':
+            camera.l = camera.l.rotate(camera.r, -3.0);
+            camera.u = camera.r * camera.l;
+            camera.print();
+            break;
+        case '5':
+            camera.r = camera.r.rotate(camera.l, -3.0);
+            camera.u = camera.r * camera.l;
+            camera.print();
+            break;
+        case '6':
+            camera.r = camera.r.rotate(camera.l, 3.0);
+            camera.u = camera.r * camera.l;
+            camera.print();
+        default:
+            break;
+    }
+}
+
 void specialKeyListener(int key, int x, int y) {
 
     switch (key) {
 
-        case GLUT_KEY_DOWN:
-            camera.pos = camera.pos.sum(camera.l.negate());
+        case GLUT_KEY_UP:
+            camera.pos = camera.pos + camera.l;
             camera.print();
             break;
 
-        case GLUT_KEY_UP:
-            camera.pos = camera.pos.sum(camera.l);
+        case GLUT_KEY_DOWN:
+            camera.pos = camera.pos - camera.l;
             camera.print();
             break;
 
         case GLUT_KEY_RIGHT:
-            camera.pos = camera.pos.sum(camera.r);
+            camera.pos = camera.pos + camera.r;
             camera.print();
             break;
 
         case GLUT_KEY_LEFT:
-            camera.pos = camera.pos.sum(camera.r.negate());
+            camera.pos = camera.pos - camera.r;
             camera.print();
             break;
 
         case GLUT_KEY_PAGE_UP:
-            camera.pos = camera.pos.sum(camera.u);
+            camera.pos = camera.pos + camera.u;
             camera.print();
             break;
 
         case GLUT_KEY_PAGE_DOWN:
-            camera.pos = camera.pos.sum(camera.u.negate());
+            camera.pos = camera.pos - camera.u;
             camera.print();
             break;
-
-        /*
-            case GLUT_KEY_INSERT:
-                break;
-
-            case GLUT_KEY_HOME:
-                break;
-            case GLUT_KEY_END:
-                break;
-        */
 
         default:
             break;
@@ -125,34 +153,21 @@ void display() {
 
     clearDisplay();
 
-    /********************
-    / set-up camera here
-    ********************/
     //load the correct matrix -- MODEL-VIEW matrix
     glMatrixMode(GL_MODELVIEW);
 
     //initialize the matrix
     glLoadIdentity();
 
-    //now give three info
-    //1. where is the camera (viewer)?
-    //2. where is the camera looking?
-    //3. Which direction is the camera's UP direction?
-
-    //gluLookAt(100,100,100,	0,0,0,	0,0,1);
-    //gluLookAt(200*cos(cameraAngle), 200*sin(cameraAngle), cameraHeight,		0,0,0,		0,0,1);
     gluLookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.x + camera.l.x, camera.pos.y + camera.l.y, camera.pos.z + camera.l.z, camera.u.x, camera.u.y, camera.u.z);
 
-
-    //again select MODEL-VIEW
     glMatrixMode(GL_MODELVIEW);
 
-    glColor3f(0.0, 1.0, 0.0);
-    drawAxes();
+    drawAxes(9999);
+
     glColor3f(1.0, 1.0, 1.0);
-    drawGrid();
-    glColor3f(1.0, 0.0, 0.0);
     drawSphere(50, 30, 50);
+
 
     // TODO: draw objects here
 
@@ -179,6 +194,7 @@ int main(int argc, char **argv) {
 
     // TODO: register listeners here
     registerSpecialKeysListener(specialKeyListener);
+    registerKeyboardListener(keyboardListener);
 
     glutMainLoop();        //The main loop of OpenGL
 
