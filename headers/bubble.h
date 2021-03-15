@@ -20,14 +20,14 @@ public:
 
     Bubble() {
         pos = Vector();
-        direction = Vector(getRandomDirection(), getRandomDirection(), 0).normalize();
+        direction = Vector(getRandomFloat(), getRandomFloat(), 0).normalize();
         radius = 5.00;
         isVisible = false;
     }
 
     Bubble(const Vector &pos) {
         this -> pos = pos;
-        direction = Vector(getRandomDirection(), getRandomDirection(), 0).normalize();
+        direction = Vector(getRandomFloat(), getRandomFloat(), 0).normalize();
         radius = 5.00;
         isVisible = false;
     }

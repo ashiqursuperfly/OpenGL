@@ -15,10 +15,10 @@ Bubble * bubbles[5];
 
 void initGlobalVariables() {
 
-    outerBoundary = Rectangle(Vector(-WIDTH/5, HEIGHT/5, 0),Vector(WIDTH/5, HEIGHT/5, 0), Vector(-WIDTH/5, -HEIGHT/5, 0),  Vector(WIDTH/5, -HEIGHT/5, 0));
+    outerBoundary = Rectangle(Vector(-WIDTH/5.0, HEIGHT/5.0, 0),Vector(WIDTH/5.0, HEIGHT/5.0, 0), Vector(-WIDTH/5.0, -HEIGHT/5.0, 0),  Vector(WIDTH/5.0, -HEIGHT/5.0, 0));
 
     for (int i = 0; i < 5; i++) {
-        Bubble * b = new Bubble(Vector(-WIDTH/5 + 5, -HEIGHT/5 + 5, 0));
+        Bubble * b = new Bubble(Vector(-WIDTH/5.0 + 5, -HEIGHT/5.0 + 5, 0));
         bubbles[i] = b;
         b->print();
     }
@@ -115,13 +115,19 @@ void animate() {
 
         Vector next = b->pos + (b->direction * Bubble::speed);
 
-        if (outerBoundary.contains(next)) {
-            b->pos = next;
+        switch (outerBoundary.contains(next)) {
+
+            case NO_COLLISION:
+                b->pos = next;
+                break;
+            case L_R_WALL:
+                b->direction = Vector(-b->direction.x, b->direction.y, b->direction.z);
+                break;
+            case T_B_WALL:
+                b->direction = Vector(b->direction.x, -b->direction.y, b->direction.z);
+                break;
         }
-        else {
-            b->direction = -b->direction;
-            b->pos = b->pos + (b->direction * Bubble::speed);
-        }
+
     }
 
     glutPostRedisplay();
