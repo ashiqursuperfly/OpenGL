@@ -70,20 +70,31 @@ public:
 
     Vector operator* (double scalar) const {
 
-        Vector a;
+        Vector res;
 
         if (scalar != 0){
-            a.x = x * scalar;
-            a.y = y * scalar;
-            a.z = z * scalar;
+            res.x = x * scalar;
+            res.y = y * scalar;
+            res.z = z * scalar;
         }
 
-        return a;
+        return res;
     }
 
+    Vector normalize() const {
 
-    Vector rotate(Vector const & axis, double angleDegrees)
-    {
+        Vector res;
+
+        float val = sqrt(x * x + y * y + z * z);
+
+        res.x = x / val;
+        res.y = y / val;
+        res.z = z / val;
+
+        return res;
+    }
+
+    Vector rotate(Vector const & axis, double angleDegrees) const {
         //rotate this vector with respect to an axis
         Vector crossProduct = axis * (*this);
 

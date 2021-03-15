@@ -8,6 +8,8 @@
 #define HEIGHT 600
 #define WIDTH 600
 
+bool PAUSE = false;
+
 Rectangle outerBoundary;
 Bubble * bubbles[5];
 
@@ -18,11 +20,32 @@ void initGlobalVariables() {
     for (int i = 0; i < 5; i++) {
         Bubble * b = new Bubble(Vector(-WIDTH/5 + 5, -HEIGHT/5 + 5, 0));
         bubbles[i] = b;
+        b->print();
+    }
+}
+
+void specialKeyListener(int key, int x, int y) {
+
+    switch (key) {
+
+        case GLUT_KEY_UP:
+            Bubble::updateSpeed(0.1);
+            break;
+
+        case GLUT_KEY_DOWN:
+            Bubble::updateSpeed(-0.1);
+            break;
+
+        case GLUT_KEY_F1:
+            PAUSE = 1 - PAUSE;
+            break;
+
+        default:
+            break;
+
     }
 
 }
-
-
 
 void makeBubblesVisiblePeriodically(int unused) {
 
@@ -72,6 +95,7 @@ void display() {
     drawAxes(WIDTH);
 
     // TODO: draw objects here
+
     drawRect(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
     drawVisibleBubbles();
 
@@ -82,18 +106,21 @@ void display() {
 void animate() {
 
     for (int i = 0; i < 5; ++i) {
+
+        if (PAUSE) break;
+
         Bubble * b = bubbles[i];
 
         if (!b->isVisible) break;
 
-        Vector next = b->pos + b->direction;
+        Vector next = b->pos + (b->direction * Bubble::speed);
 
         if (outerBoundary.contains(next)) {
             b->pos = next;
         }
         else {
             b->direction = -b->direction;
-            b->pos = b->pos + b->direction;
+            b->pos = b->pos + (b->direction * Bubble::speed);
         }
     }
 
@@ -140,6 +167,8 @@ int main(int argc, char **argv) {
 
     glutDisplayFunc(display);
     glutIdleFunc(animate);
+
+    registerSpecialKeysListener(specialKeyListener);
 
     glutMainLoop();        //The main loop of OpenGL
 
