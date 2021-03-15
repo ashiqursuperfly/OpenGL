@@ -4,7 +4,5 @@ project(Offline1)
 set(CMAKE_CXX_STANDARD 11)
 
 set(OpenGlLinkers -lglut -lGLU -lGL)
-# add_executable(Offline1 demo2.cpp)
-# add_executable(Offline1 util.h demo.cpp)
-add_executable(Offline1 util.h camera.cpp)
+add_executable(Offline1 headers/vector.h headers/util.h headers/camera.h headers/bubble.h camera.cpp )
 target_link_libraries(Offline1 ${OpenGlLinkers})

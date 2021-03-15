@@ -1,47 +1,40 @@
 //
 // Created by ashiq on 3/14/21.
 //
-#include "util.h"
-
-class Camera {
-public:
-
-    Vector pos;
-    Vector u, r, l;
-
-    Camera() {
-
-        pos = Vector();
-        pos.x = 150;
-        pos.y = 150;
-        pos.z = 50;
-
-        u.x = 0;
-        u.y = 0;
-        u.z = 1;
-
-        r.x = -1 / sqrt(2.0);
-        r.y = 1 / sqrt(2.0);
-        r.z = 0;
-
-        l = u * r;
-
-        print();
-    }
-
-    void print() const {
-        std::cout<<"Pos:";
-        pos.print();
-        std::cout<<"l:";
-        l.print();
-        std::cout<<"r:";
-        r.print();
-        std::cout<<"u:";
-        u.print();
-    }
-};
+#include "headers/util.h"
 
 Camera camera;
+
+void display() {
+
+    clearDisplay();
+
+    //load the correct matrix -- MODEL-VIEW matrix
+    glMatrixMode(GL_MODELVIEW);
+
+    //initialize the matrix
+    glLoadIdentity();
+
+    gluLookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.x + camera.l.x, camera.pos.y + camera.l.y, camera.pos.z + camera.l.z, camera.u.x, camera.u.y, camera.u.z);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    drawAxes(9999);
+
+    glColor3f(1.0, 1.0, 1.0);
+    drawSphere(50, 30, 50);
+
+
+    // TODO: draw objects here
+
+    //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
+    glutSwapBuffers();
+}
+
+void animate() {
+    // TODO: what you want to do in the idle time (when no drawing is occuring)
+    glutPostRedisplay();
+}
 
 void keyboardListener(unsigned char key, int x, int y) {
 
@@ -142,37 +135,6 @@ void init() {
     //aspect ratio that determines the field of view in the X direction (horizontally)
     //near distance
     //far distance
-}
-
-void animate() {
-    // TODO: what you want to do in the idle time (when no drawing is occuring)
-    glutPostRedisplay();
-}
-
-void display() {
-
-    clearDisplay();
-
-    //load the correct matrix -- MODEL-VIEW matrix
-    glMatrixMode(GL_MODELVIEW);
-
-    //initialize the matrix
-    glLoadIdentity();
-
-    gluLookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.x + camera.l.x, camera.pos.y + camera.l.y, camera.pos.z + camera.l.z, camera.u.x, camera.u.y, camera.u.z);
-
-    glMatrixMode(GL_MODELVIEW);
-
-    drawAxes(9999);
-
-    glColor3f(1.0, 1.0, 1.0);
-    drawSphere(50, 30, 50);
-
-
-    // TODO: draw objects here
-
-    //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
-    glutSwapBuffers();
 }
 
 
