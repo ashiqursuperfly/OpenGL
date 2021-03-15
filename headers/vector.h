@@ -72,13 +72,23 @@ public:
 
         Vector res;
 
-        if (scalar != 0){
+        if (scalar != 0) {
             res.x = x * scalar;
             res.y = y * scalar;
             res.z = z * scalar;
         }
 
         return res;
+    }
+
+    double getDistance(Vector const & rhs) const {
+
+        double dX = x - rhs.x;
+        double dY = y - rhs.y;
+        double dZ = z - rhs.z;
+
+        return sqrt(dX * dX + dY * dY + dZ * dZ);
+
     }
 
     Vector normalize() const {
