@@ -22,32 +22,33 @@ void initGlobalVariables() {
 
 }
 
+
+
+void makeBubblesVisiblePeriodically(int unused) {
+
+    int i = 0;
+
+    for (i = 0; i < 5; ++i) {
+        if (!bubbles[i]->isVisible) {
+            bubbles[i]->isVisible = true;
+            break;
+        }
+    }
+    if (i < 5) {
+        glutTimerFunc(1000, makeBubblesVisiblePeriodically, unused);
+    }
+
+}
+
 void drawBubble(int i) {
     glColor3f(1.0, 1.0, 1.0);
     drawCircleXY(bubbles[i]->radius, 50, bubbles[i]->pos);
 }
 
-void animateInitialBubbleDraw(int unused) {
-
-    int i = 0;
-
-    for (i = 0; i < 5; ++i) {
-        if (!bubbles[i]->isDrawn) {
-            bubbles[i]->isDrawn = true;
-            drawBubble(i);
-            break;
-        }
-    }
-    if (i < 5) {
-        glutTimerFunc(1000, animateInitialBubbleDraw, unused);
-    }
-
-}
-
-void drawBubbles() {
+void drawVisibleBubbles() {
 
     for (int i = 0; i < 5; ++i) {
-        if (bubbles[i]->isDrawn) {
+        if (bubbles[i]->isVisible) {
             drawBubble(i);
         }
     }
@@ -72,7 +73,7 @@ void display() {
 
     // TODO: draw objects here
     drawRect(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
-    drawBubbles();
+    drawVisibleBubbles();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -83,7 +84,7 @@ void animate() {
     for (int i = 0; i < 5; ++i) {
         Bubble * b = bubbles[i];
 
-        if (!b->isDrawn) break;
+        if (!b->isVisible) break;
 
         Vector next = b->pos + b->direction;
 
@@ -133,7 +134,7 @@ int main(int argc, char **argv) {
 
     init();
     initGlobalVariables();
-    animateInitialBubbleDraw(0);
+    makeBubblesVisiblePeriodically(0);
 
     glEnable(GL_DEPTH_TEST);    //enable Depth Testing
 

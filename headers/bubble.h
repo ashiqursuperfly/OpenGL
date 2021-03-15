@@ -9,23 +9,23 @@
 
 class Bubble {
 public:
-    bool isDrawn;
+    bool isVisible;
     float radius;
     Vector pos;
     Vector direction;
 
     Bubble() {
         pos = Vector();
-        direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
+        direction = Vector(getRandomDirection(), getRandomDirection(), 0);
         radius = 5.00;
-        isDrawn = false;
+        isVisible = false;
     }
 
     Bubble(const Vector &pos) {
         this -> pos = pos;
-        direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
+        direction = Vector(getRandomDirection(), getRandomDirection(), 0);
         radius = 5.00;
-        isDrawn = false;
+        isVisible = false;
     }
 
 };
