@@ -34,8 +34,6 @@ public:
         minY = std::min(minY, bl.y);
         minY = std::min(minY, br.y);
 
-        std::cout<<minX<<maxX<<minY<<maxY<<std::endl;
-
         if (p.x < maxX && p.x > minX && p.y < maxY && p.y > minY) return true;
 
         return false;

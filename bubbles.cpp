@@ -48,7 +48,6 @@ void display() {
     drawAxes(WIDTH);
 
     // TODO: draw objects here
-
     drawRect(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
     drawBubbles();
 
@@ -59,13 +58,15 @@ void display() {
 void animate() {
 
     for (int i = 0; i < 5; ++i) {
-        Vector next = bubbles[i]->pos + bubbles[i]->speed;
+        Bubble * b = bubbles[i];
+        Vector next = b->pos + b->direction;
+
         if (outerBoundary.contains(next)) {
-            bubbles[i]->pos = next;
+            b->pos = next;
         }
         else {
-            bubbles[i]->speed = Vector(-bubbles[i]->speed.x, -bubbles[i]->speed.y, bubbles[i]->speed.z);
-            bubbles[i]->pos = bubbles[i]->pos + bubbles[i]->speed;
+            b->direction = -b->direction;
+            b->pos = b->pos + b->direction;
         }
     }
 

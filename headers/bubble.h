@@ -11,17 +11,17 @@ class Bubble {
 public:
     float radius;
     Vector pos;
-    Vector speed;
+    Vector direction;
 
     Bubble() {
         pos = Vector();
-        speed = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
+        direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
         radius = 5.00;
     }
 
     Bubble(const Vector &pos) {
         this -> pos = pos;
-        speed = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
+        direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
         radius = 5.00;
     }
 
