@@ -7,9 +7,14 @@
 
 #endif //OFFLINE1_BUBBLE_H
 
+enum BubbleState {
+    OUTER, INNER
+};
+
 class Bubble {
 
 public:
+    BubbleState state;
     bool isVisible;
     float radius;
     Vector pos;
@@ -21,15 +26,17 @@ public:
     Bubble() {
         pos = Vector();
         direction = Vector(getRandomFloat(), getRandomFloat(), 0).normalize();
-        radius = 5.00;
+        radius = 7.00;
         isVisible = false;
+        state = OUTER;
     }
 
     Bubble(const Vector &pos) {
         this -> pos = pos;
         direction = Vector(getRandomFloat(), getRandomFloat(), 0).normalize();
-        radius = 5.00;
+        radius = 7.00;
         isVisible = false;
+        state = OUTER;
     }
 
     static void updateSpeed(float delta) {

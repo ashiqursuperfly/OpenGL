@@ -4,21 +4,24 @@
 #include "headers/util.h"
 #include "headers/rectangle.h"
 #include "headers/bubble.h"
+#include "headers/circle.h"
 
 #define HEIGHT 600
 #define WIDTH 600
 
 bool PAUSE = false;
 
+Circle innerBoundary;
 Rectangle outerBoundary;
 Bubble * bubbles[5];
 
 void initGlobalVariables() {
 
-    outerBoundary = Rectangle(Vector(-WIDTH/5.0, HEIGHT/5.0, 0),Vector(WIDTH/5.0, HEIGHT/5.0, 0), Vector(-WIDTH/5.0, -HEIGHT/5.0, 0),  Vector(WIDTH/5.0, -HEIGHT/5.0, 0));
+    outerBoundary = Rectangle(Vector(-WIDTH/7.0, HEIGHT/7.0, 0),Vector(WIDTH/7.0, HEIGHT/7.0, 0), Vector(-WIDTH/7.0, -HEIGHT/7.0, 0),  Vector(WIDTH/7.0, -HEIGHT/7.0, 0));
 
     for (int i = 0; i < 5; i++) {
-        Bubble * b = new Bubble(Vector(-WIDTH/5.0 + 5, -HEIGHT/5.0 + 5, 0));
+        Bubble * b = new Bubble();
+        b->pos = Vector(-WIDTH/7.0 + b->radius, -HEIGHT/7.0 + b->radius, 0);
         bubbles[i] = b;
         b->print();
     }
@@ -96,7 +99,8 @@ void display() {
 
     // TODO: draw objects here
 
-    drawRect(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
+    drawRectXY(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
+    // drawCircleXY()
     drawVisibleBubbles();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)

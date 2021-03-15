@@ -6,3 +6,10 @@
 #define OFFLINE1_CIRCLE_H
 
 #endif //OFFLINE1_CIRCLE_H
+
+
+class Circle {
+public:
+    Vector center;
+    float radius;
+};

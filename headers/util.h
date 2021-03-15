@@ -77,7 +77,7 @@ void drawGrid(int lines, int len, int spacing) {
 
 }
 
-void drawRect(Vector tl, Vector tr, Vector bl, Vector br) {
+void drawRectXY(Vector tl, Vector tr, Vector bl, Vector br) {
 
     //glColor3f(1.0,0.0,0.0);
     glBegin(GL_LINES);
