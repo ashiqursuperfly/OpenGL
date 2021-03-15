@@ -9,6 +9,7 @@
 
 class Bubble {
 public:
+    bool isDrawn;
     float radius;
     Vector pos;
     Vector direction;
@@ -17,12 +18,14 @@ public:
         pos = Vector();
         direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
         radius = 5.00;
+        isDrawn = false;
     }
 
     Bubble(const Vector &pos) {
         this -> pos = pos;
         direction = Vector(getRandomFloat() * 0.8f, getRandomFloat() * 0.8f, 0);
         radius = 5.00;
+        isDrawn = false;
     }
 
 };

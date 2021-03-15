@@ -16,8 +16,30 @@ void initGlobalVariables() {
     outerBoundary = Rectangle(Vector(-WIDTH/5, HEIGHT/5, 0),Vector(WIDTH/5, HEIGHT/5, 0), Vector(-WIDTH/5, -HEIGHT/5, 0),  Vector(WIDTH/5, -HEIGHT/5, 0));
 
     for (int i = 0; i < 5; i++) {
-        Bubble * b = new Bubble(Vector(-WIDTH/10, -HEIGHT/10, 0));
+        Bubble * b = new Bubble(Vector(-WIDTH/5 + 5, -HEIGHT/5 + 5, 0));
         bubbles[i] = b;
+    }
+
+}
+
+void drawBubble(int i) {
+    glColor3f(1.0, 1.0, 1.0);
+    drawCircleXY(bubbles[i]->radius, 50, bubbles[i]->pos);
+}
+
+void animateInitialBubbleDraw(int unused) {
+
+    int i = 0;
+
+    for (i = 0; i < 5; ++i) {
+        if (!bubbles[i]->isDrawn) {
+            bubbles[i]->isDrawn = true;
+            drawBubble(i);
+            break;
+        }
+    }
+    if (i < 5) {
+        glutTimerFunc(1000, animateInitialBubbleDraw, unused);
     }
 
 }
@@ -25,8 +47,9 @@ void initGlobalVariables() {
 void drawBubbles() {
 
     for (int i = 0; i < 5; ++i) {
-        glColor3f(1.0, 1.0, 1.0);
-        drawCircleXY(bubbles[i]->radius, 50, bubbles[i]->pos);
+        if (bubbles[i]->isDrawn) {
+            drawBubble(i);
+        }
     }
 
 }
@@ -59,6 +82,9 @@ void animate() {
 
     for (int i = 0; i < 5; ++i) {
         Bubble * b = bubbles[i];
+
+        if (!b->isDrawn) break;
+
         Vector next = b->pos + b->direction;
 
         if (outerBoundary.contains(next)) {
@@ -107,6 +133,7 @@ int main(int argc, char **argv) {
 
     init();
     initGlobalVariables();
+    animateInitialBubbleDraw(0);
 
     glEnable(GL_DEPTH_TEST);    //enable Depth Testing
 
