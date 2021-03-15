@@ -9,5 +9,20 @@
 
 class Bubble {
 public:
-    Vector
+    float radius;
+    Vector pos;
+    Vector speed;
+
+    Bubble() {
+        pos = Vector();
+        speed = Vector(getRandomFloat() * 0.2f, getRandomFloat() * 0.2f, 0);
+        radius = 5.00;
+    }
+
+    Bubble(const Vector &pos) {
+        this -> pos = pos;
+        speed = Vector(getRandomFloat() * 0.2f, getRandomFloat() * 0.2f, 0);
+        radius = 5.00;
+    }
+
 };

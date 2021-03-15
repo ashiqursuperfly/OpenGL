@@ -9,10 +9,18 @@
 
 #include<cmath>
 #include <iostream>
+#include <random>
 #include <GL/glut.h>
 #include "vector.h"
 #include "camera.h"
 
+float getRandomFloat() {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(-1.0, 1.0);
+
+    return dist(mt);
+}
 
 void drawAxes(int len) {
 
@@ -69,6 +77,28 @@ void drawGrid(int lines, int len, int spacing) {
 
 }
 
+void drawRect(Vector tl, Vector tr, Vector bl, Vector br) {
+
+    //glColor3f(1.0,0.0,0.0);
+    glBegin(GL_LINES);
+
+    {
+        glVertex3f(tl.x, tl.y, 0);
+        glVertex3f(tr.x, tr.y, 0);
+
+        glVertex3f(bl.x, bl.y, 0);
+        glVertex3f(br.x, br.y, 0);
+
+        glVertex3f(tl.x, tl.y, 0);
+        glVertex3f(bl.x, bl.y, 0);
+
+        glVertex3f(tr.x, tr.y, 0);
+        glVertex3f(br.x, br.y, 0);
+    }
+
+
+    glEnd();
+}
 
 void drawSquare(double a) {
 
@@ -86,15 +116,15 @@ void drawSquare(double a) {
 }
 
 
-void drawCircle(double radius, int segments) {
+void drawCircleXY(double radius, int segments, Vector center) {
 
     int i;
     Vector points[100];
 
     //generate points
     for (i = 0; i <= segments; i++) {
-        points[i].x = radius * cos(((double) i / (double) segments) * 2 * pi);
-        points[i].y = radius * sin(((double) i / (double) segments) * 2 * pi);
+        points[i].x = radius * cos(((double) i / (double) segments) * 2 * pi) + center.x;
+        points[i].y = radius * sin(((double) i / (double) segments) * 2 * pi) + center.y;
     }
 
     //draw segments using generated points
