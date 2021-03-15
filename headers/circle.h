@@ -17,11 +17,11 @@ public:
 
     Circle(const Vector &center, float radius) : center(center), radius(radius) {}
 
-    bool contains(Vector otherCenter) {
+    bool contains(Vector & otherCenter, float offset) {
 
         double distance = center.getDistance(otherCenter);
 
-        if (distance < radius) return true;
+        if (distance < radius - offset) return true;
 
         return false;
 

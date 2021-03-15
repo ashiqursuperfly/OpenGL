@@ -53,7 +53,17 @@ public:
         else Bubble::speed = MAX_SPEED;
     }
 
-    void print() {
+    bool checkCollision(const Bubble & rhs) const {
+
+        double dist = pos.getDistance(rhs.pos);
+        if (dist >= rhs.radius + radius - radius/2.5 && dist <= rhs.radius + radius + radius/2.5) {
+            return true;
+        }
+        return false;
+
+    }
+
+    void print() const {
         std::cout<<"Pos:";
         pos.print();
         std::cout<<"Dir:";
@@ -62,5 +72,5 @@ public:
 
 };
 
-float Bubble::MAX_SPEED = 1.0;
+float Bubble::MAX_SPEED = 0.5;
 float Bubble::speed = 0.2;

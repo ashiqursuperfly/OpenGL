@@ -91,6 +91,10 @@ public:
 
     }
 
+    double dot (Vector const & rhs) const {
+        return x * rhs.x + y * rhs.y + z * rhs.z;
+    }
+
     Vector normalize() const {
 
         Vector res;

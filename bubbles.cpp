@@ -3,9 +3,9 @@
 //
 
 #include "headers/util.h"
-#include "headers/circle.h"
 #include "headers/rectangle.h"
 #include "headers/bubble.h"
+#include "headers/circle.h"
 
 #define HEIGHT 600
 #define WIDTH 600
@@ -35,11 +35,11 @@ void specialKeyListener(int key, int x, int y) {
     switch (key) {
 
         case GLUT_KEY_UP:
-            Bubble::updateSpeed(0.1);
+            Bubble::updateSpeed(0.01);
             break;
 
         case GLUT_KEY_DOWN:
-            Bubble::updateSpeed(-0.1);
+            Bubble::updateSpeed(-0.01);
             break;
 
         case GLUT_KEY_F1:
@@ -64,7 +64,7 @@ void makeBubblesVisiblePeriodically(int unused) {
         }
     }
     if (i < BUBBLE_COUNT) {
-        glutTimerFunc(1000, makeBubblesVisiblePeriodically, unused);
+        glutTimerFunc(5000, makeBubblesVisiblePeriodically, unused);
     }
 
 }
@@ -101,7 +101,6 @@ void display() {
     // drawAxes(WIDTH);
 
     // TODO: draw objects here
-
     glColor3f(0, 1.0, 0);
     drawRectXY(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
     glColor3f(1.0, 0, 0);
@@ -124,7 +123,7 @@ void outerBoundaryLogic() {
         switch (outerBoundary.contains(next)) {
             case NO_COLLISION:
                 b->pos = next;
-                if (innerBoundary.contains(b->pos)) {
+                if (innerBoundary.contains(b->pos, b->radius)) {
                     b->state = INNER;
                 }
                 break;
@@ -139,6 +138,39 @@ void outerBoundaryLogic() {
     }
 }
 
+void bubbleBubbleCollisionLogic() {
+
+    for (int i = 0; i < BUBBLE_COUNT && !PAUSE ; ++i) {
+
+        Bubble * b1 = bubbles[i];
+
+        if (!b1->isVisible || b1->state == OUTER) continue;
+
+        for (int j = 0; j < BUBBLE_COUNT && !PAUSE; ++j) {
+            if (i == j) continue;
+
+            Bubble * b2 = bubbles[j];
+
+            if (b2->state == OUTER) continue;
+
+            if (b1->checkCollision(*b2)) {
+                //TODO: do actual reflection
+                Vector n = (b1->pos - b2->pos).normalize();
+                Vector r1 = b1->direction - n * (2 * (n.dot(b1->direction)));
+                Vector r2 = b2->direction - n * (2 * (n.dot(b2->direction)));
+                b1->direction = r1.normalize();
+                b2->direction = r2.normalize();
+                b1->pos = b1->pos + (b1->direction * Bubble::speed);
+                b2->pos = b2->pos + (b2->direction * Bubble::speed);
+            }
+
+
+        }
+
+    }
+
+}
+
 void innerBoundaryLogic() {
     for (int i = 0; i < BUBBLE_COUNT && !PAUSE ; ++i) {
 
@@ -148,8 +180,11 @@ void innerBoundaryLogic() {
 
         Vector next = b->pos + (b->direction * Bubble::speed);
 
-        if (!innerBoundary.contains(next)) {
-            b->direction = - b->direction;
+        if (!innerBoundary.contains(next, b->radius)) {
+            Vector n = innerBoundary.center - next;
+            n = n.normalize();
+            Vector r = b->direction - n * (2 * (n.dot(b->direction)));
+            b->direction = r.normalize();
         }
         else {
             b->pos = next;
@@ -162,6 +197,7 @@ void innerBoundaryLogic() {
 void animate() {
     outerBoundaryLogic();
     innerBoundaryLogic();
+    bubbleBubbleCollisionLogic();
     glutPostRedisplay();
 }
 
