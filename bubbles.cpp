@@ -2,14 +2,18 @@
 // Created by ashiq on 3/14/21.
 //
 #include "headers/util.h"
+#include "headers/rectangle.h"
 #include "headers/bubble.h"
 
 #define HEIGHT 600
 #define WIDTH 600
 
+Rectangle outerBoundary;
 Bubble * bubbles[5];
 
-void initBubbles() {
+void initGlobalVariables() {
+
+    outerBoundary = Rectangle(Vector(-WIDTH/5, HEIGHT/5, 0),Vector(WIDTH/5, HEIGHT/5, 0), Vector(-WIDTH/5, -HEIGHT/5, 0),  Vector(WIDTH/5, -HEIGHT/5, 0));
 
     for (int i = 0; i < 5; i++) {
         Bubble * b = new Bubble(Vector(-WIDTH/10, -HEIGHT/10, 0));
@@ -45,7 +49,7 @@ void display() {
 
     // TODO: draw objects here
 
-    drawRect(Vector(-WIDTH/5, HEIGHT/5, 0),Vector(WIDTH/5, HEIGHT/5, 0), Vector(-WIDTH/5, -HEIGHT/5, 0),  Vector(WIDTH/5, -HEIGHT/5, 0));
+    drawRect(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
     drawBubbles();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
@@ -55,7 +59,14 @@ void display() {
 void animate() {
 
     for (int i = 0; i < 5; ++i) {
-        bubbles[i]->pos = bubbles[i]->pos + bubbles[i]->speed;
+        Vector next = bubbles[i]->pos + bubbles[i]->speed;
+        if (outerBoundary.contains(next)) {
+            bubbles[i]->pos = next;
+        }
+        else {
+            bubbles[i]->speed = Vector(-bubbles[i]->speed.x, -bubbles[i]->speed.y, bubbles[i]->speed.z);
+            bubbles[i]->pos = bubbles[i]->pos + bubbles[i]->speed;
+        }
     }
 
     glutPostRedisplay();
@@ -94,7 +105,7 @@ int main(int argc, char **argv) {
     glutCreateWindow("My OpenGL Program");
 
     init();
-    initBubbles();
+    initGlobalVariables();
 
     glEnable(GL_DEPTH_TEST);    //enable Depth Testing
 
