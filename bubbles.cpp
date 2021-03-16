@@ -120,12 +120,12 @@ void outerBoundaryLogic() {
 
         Vector next = b->pos + (b->direction * Bubble::speed);
 
-        switch (outerBoundary.contains(next)) {
+        switch (outerBoundary.contains(next, b->radius)) {
             case NO_COLLISION:
-                b->pos = next;
                 if (innerBoundary.contains(b->pos, b->radius)) {
                     b->state = INNER;
                 }
+                b->pos = next;
                 break;
             case L_R_WALL:
                 b->direction = Vector(-b->direction.x, b->direction.y, b->direction.z);

@@ -20,7 +20,7 @@ public:
 
     Rectangle(const Vector &tl, const Vector &tr, const Vector &bl, const Vector &br) : tl(tl), tr(tr), bl(bl), br(br) {}
 
-    RectCollision contains(Vector & p) {
+    RectCollision contains(Vector & p, float offset) {
 
         double maxX = std::max(tl.x, tr.x);
         maxX = std::max(maxX, bl.x);
@@ -38,8 +38,8 @@ public:
         minY = std::min(minY, bl.y);
         minY = std::min(minY, br.y);
 
-        if (p.x < minX || p.x > maxX) return L_R_WALL;
-        if (p.y < minY || p.y > maxY) return T_B_WALL;
+        if (p.x < minX + offset || p.x > maxX - offset) return L_R_WALL;
+        if (p.y < minY + offset || p.y > maxY - offset) return T_B_WALL;
 
         return NO_COLLISION;
 
