@@ -26,4 +26,10 @@ public:
         return false;
 
     }
+
+    void draw() {
+        glColor3f(1.0, 0, 0);
+        drawCircleXY(radius, 50, center);
+    }
+
 };

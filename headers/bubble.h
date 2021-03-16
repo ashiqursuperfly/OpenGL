@@ -51,6 +51,7 @@ public:
         }
 
         else Bubble::speed = MAX_SPEED;
+        std::cout<<"Speed:"<<speed<<std::endl;
     }
 
     bool checkCollision(Bubble & rhs){
@@ -73,7 +74,14 @@ public:
         direction.print();
     }
 
+    void draw() {
+        if (isVisible) {
+            glColor3f(1.0, 1.0, 1.0);
+            drawCircleXY(radius, 50, pos);
+        }
+    }
 };
 
 float Bubble::MAX_SPEED = 0.5;
-float Bubble::speed = 0.15;
+float Bubble::speed = 0.1;
+

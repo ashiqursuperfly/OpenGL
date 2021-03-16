@@ -26,8 +26,23 @@ void initGlobalVariables() {
         Bubble * b = new Bubble();
         b->pos = Vector(-WIDTH/7.0 + b->radius, -HEIGHT/7.0 + b->radius, 0);
         bubbles[i] = b;
-        b->print();
+        // b->print();
     }
+}
+
+void keyboardListener(unsigned char key, int x, int y) {
+
+    switch (key) {
+        case 'p':
+            PAUSE = 1 - PAUSE;
+            break;
+        case 'P':
+            PAUSE = 1 - PAUSE;
+            break;
+        default:
+            break;
+    }
+
 }
 
 void specialKeyListener(int key, int x, int y) {
@@ -35,15 +50,11 @@ void specialKeyListener(int key, int x, int y) {
     switch (key) {
 
         case GLUT_KEY_UP:
-            Bubble::updateSpeed(0.01);
+            Bubble::updateSpeed(0.005);
             break;
 
         case GLUT_KEY_DOWN:
-            Bubble::updateSpeed(-0.01);
-            break;
-
-        case GLUT_KEY_F1:
-            PAUSE = 1 - PAUSE;
+            Bubble::updateSpeed(-0.005);
             break;
 
         default:
@@ -69,21 +80,6 @@ void makeBubblesVisiblePeriodically(int unused) {
 
 }
 
-void drawBubble(int i) {
-    glColor3f(1.0, 1.0, 1.0);
-    drawCircleXY(bubbles[i]->radius, 50, bubbles[i]->pos);
-}
-
-void drawVisibleBubbles() {
-
-    for (int i = 0; i < BUBBLE_COUNT; ++i) {
-        if (bubbles[i]->isVisible) {
-            drawBubble(i);
-        }
-    }
-
-}
-
 void display() {
 
     clearDisplay();
@@ -98,14 +94,11 @@ void display() {
 
     glMatrixMode(GL_MODELVIEW);
 
-    // drawAxes(WIDTH);
-
-    // TODO: draw objects here
-    glColor3f(0, 1.0, 0);
-    drawRectXY(outerBoundary.tl, outerBoundary.tr, outerBoundary.bl, outerBoundary.br);
-    glColor3f(1.0, 0, 0);
-    drawCircleXY(innerBoundary.radius, 50, innerBoundary.center);
-    drawVisibleBubbles();
+    outerBoundary.draw();
+    innerBoundary.draw();
+    for (int i = 0; i < BUBBLE_COUNT; ++i) {
+        bubbles[i]->draw();
+    }
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -243,6 +236,7 @@ int main(int argc, char **argv) {
     glutIdleFunc(animate);
 
     registerSpecialKeysListener(specialKeyListener);
+    registerKeyboardListener(keyboardListener);
 
     glutMainLoop();        //The main loop of OpenGL
 

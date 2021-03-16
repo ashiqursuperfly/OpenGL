@@ -45,4 +45,9 @@ public:
 
     }
 
+    void draw() {
+        glColor3f(0, 1.0, 0);
+        drawRectXY(tl, tr, bl, br);
+    }
+
 };
