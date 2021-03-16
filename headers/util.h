@@ -14,6 +14,20 @@
 #include "vector.h"
 #include "camera.h"
 
+class Rotation {
+public:
+    Vector axis;
+    float angleDegrees;
+
+    Rotation(const Vector &axis, float angleDegrees) : axis(axis), angleDegrees(angleDegrees) {}
+
+    void updateAngle(float del) {
+        if (std::abs(angleDegrees + del) < 30) {
+            angleDegrees += del;
+        }
+    }
+};
+
 float getRandomFloat() {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -125,14 +139,15 @@ void drawCircleXY(double radius, int segments, Vector center) {
     for (i = 0; i <= segments; i++) {
         points[i].x = radius * cos(((double) i / (double) segments) * 2 * pi) + center.x;
         points[i].y = radius * sin(((double) i / (double) segments) * 2 * pi) + center.y;
+        points[i].z = center.z;
     }
 
     //draw segments using generated points
     for (i = 0; i < segments; i++) {
         glBegin(GL_LINES);
         {
-            glVertex3f(points[i].x, points[i].y, 0);
-            glVertex3f(points[i + 1].x, points[i + 1].y, 0);
+            glVertex3f(points[i].x, points[i].y, points[i].z);
+            glVertex3f(points[i + 1].x, points[i + 1].y, points[i].z);
         }
         glEnd();
     }
@@ -169,10 +184,95 @@ void drawCone(double radius, double height, int segments) {
     }
 }
 
+void drawGunTip(double radius, double outRadius, int height, int slices, int stacks, Vector center, Rotation & qw, Rotation & er, Rotation & df) {
 
-void drawSphere(double radius, int slices, int stacks) {
+    Vector points[stacks + 1][slices + 1];
+    int i, j;
+    double h, r;
 
-    Vector points[100][100];
+    // generate points
+    for (i = 0; i <= stacks; i++) {
+        h = height * sin(((double) i / (double) stacks) * (pi / 2));
+        r = outRadius - outRadius * cos(((double) i / (double) stacks) * (pi / 2)) + radius;
+
+        for (j = 0; j <= slices; j++) {
+            double angle = ((double) j / (double) slices) * 2 * pi;
+            angle += df.angleDegrees;
+            points[i][j].x = r * cos(angle) + center.x;
+            points[i][j].y = r * sin(angle) + center.y;
+            points[i][j].z = h;
+            points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
+            points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
+        }
+    }
+
+    int color = 0;
+    //draw quads using generated points
+    for (i = 0; i < stacks; i++) {
+        // glColor3f((double) i / (double) stacks, (double) i / (double) stacks, (double) i / (double) stacks);
+        for (j = 0; j < slices; j++) {
+            glBegin(GL_QUADS);
+
+            {
+                glColor3f(color, color, color);
+                color = 1 - color;
+                //upper hemisphere
+                glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
+                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
+                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
+                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z + points[i + 1][j].z);
+            }
+
+            glEnd();
+        }
+    }
+}
+
+void drawGunBarrel(double radius, int height, int slices, int stacks, Vector center, Rotation & qw, Rotation & er) {
+
+    Vector points[stacks + 1][slices + 1];
+    int i, j;
+    double h, r;
+
+    // generate points
+    for (i = 0; i <= stacks; i++) {
+        h = height * sin(((double) i / (double) stacks) * (pi / 2));
+        r = radius;
+        for (j = 0; j <= slices; j++) {
+            double angle = ((double) j / (double) slices) * 2 * pi;
+            points[i][j].x = r * cos(angle) + center.x;
+            points[i][j].y = r * sin(angle) + center.y;
+            points[i][j].z = h;
+            points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
+            points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
+        }
+    }
+
+    int color = 0;
+    //draw quads using generated points
+    for (i = 0; i < stacks; i++) {
+        // glColor3f((double) i / (double) stacks, (double) i / (double) stacks, (double) i / (double) stacks);
+        for (j = 0; j < slices; j++) {
+            glBegin(GL_QUADS);
+
+            {
+                glColor3f(color, color, color);
+                color = 1 - color;
+                //upper hemisphere
+                glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
+                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
+                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
+                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z + points[i + 1][j].z);
+            }
+
+            glEnd();
+        }
+    }
+}
+
+void drawSphere(double radius, int slices, int stacks, Vector center, Rotation & qw, Rotation & er) {
+
+    Vector points[stacks + 1][slices + 1];
     int i, j;
     double h, r;
 
@@ -181,12 +281,16 @@ void drawSphere(double radius, int slices, int stacks) {
         h = radius * sin(((double) i / (double) stacks) * (pi / 2));
         r = radius * cos(((double) i / (double) stacks) * (pi / 2));
         for (j = 0; j <= slices; j++) {
-            points[i][j].x = r * cos(((double) j / (double) slices) * 2 * pi);
-            points[i][j].y = r * sin(((double) j / (double) slices) * 2 * pi);
-            points[i][j].z = h;
+            double angle = ((double) j / (double) slices) * 2 * pi;
+            points[i][j].x = r * cos(angle) + center.x;
+            points[i][j].y = r * sin(angle) + center.y;
+            points[i][j].z = h ;
+            points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
+            points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
         }
     }
 
+    int color = 0;
     //draw quads using generated points
     for (i = 0; i < stacks; i++) {
         // glColor3f((double) i / (double) stacks, (double) i / (double) stacks, (double) i / (double) stacks);
@@ -194,16 +298,18 @@ void drawSphere(double radius, int slices, int stacks) {
             glBegin(GL_QUADS);
 
             {
+                glColor3f(color, color, color);
+                color = 1 - color;
                 //upper hemisphere
-                glVertex3f(points[i][j].x, points[i][j].y, points[i][j].z);
-                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, points[i][j + 1].z);
-                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, points[i + 1][j + 1].z);
-                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, points[i + 1][j].z);
+                glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
+                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
+                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
+                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z + points[i + 1][j].z);
                 //lower hemisphere
-                glVertex3f(points[i][j].x, points[i][j].y, -points[i][j].z);
-                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, -points[i][j + 1].z);
-                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, -points[i + 1][j + 1].z);
-                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, -points[i + 1][j].z);
+                glVertex3f(points[i][j].x, points[i][j].y, center. z - points[i][j].z);
+                glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z - points[i][j + 1].z);
+                glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z - points[i + 1][j + 1].z);
+                glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z - points[i + 1][j].z);
             }
 
             glEnd();

@@ -91,7 +91,7 @@ public:
 
     }
 
-    double dot (Vector const & rhs) const {
+    double dot(Vector const & rhs) const {
         return x * rhs.x + y * rhs.y + z * rhs.z;
     }
 
@@ -109,7 +109,7 @@ public:
     }
 
     Vector rotate(Vector const & axis, double angleDegrees) const {
-        //rotate this vector with respect to an axis
+        //qr this vector with respect to an axis
         Vector crossProduct = axis * (*this);
 
         // r1 = lxCost , lyCost

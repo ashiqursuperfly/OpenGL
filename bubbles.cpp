@@ -147,7 +147,6 @@ void bubbleBubbleCollisionLogic() {
             if (b2->state == OUTER) continue;
 
             if (b1->checkCollision(*b2)) {
-                //TODO: do actual reflection
                 Vector n = (b1->pos - b2->pos).normalize();
                 Vector r1 = b1->direction - n * (2 * (n.dot(b1->direction)));
                 Vector r2 = b2->direction - n * (2 * (n.dot(b2->direction)));
