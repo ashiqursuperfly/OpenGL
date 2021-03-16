@@ -3,7 +3,7 @@
 //
 
 #include "headers/util.h"
-
+#include "headers/gun.h"
 /**
  * Marks:
  * draw sphere: 4
@@ -12,10 +12,8 @@
  * drawing bullets on plane
  */
 
-Rotation er = Rotation(Vector(0, 1, 0), 0);
-Rotation qw = Rotation(Vector(1, 0, 0), 0);
-Rotation df = Rotation(Vector(0, 0, 1), 0);
 Camera camera;
+Gun gun;
 
 void display() {
 
@@ -38,13 +36,9 @@ void display() {
 
     glColor3f(1.0, 1.0, 1.0);
 
-
-    drawGunBarrel(5, 30, 50, 200, Vector(0, 0, 0), qw, er);
-    drawGunTip(4.5,5.2, 33, 50, 200, Vector(0, 0, 0), qw, er, df);
-
-
-
     // TODO: draw objects here
+    gun.drawBarrel();
+    gun.drawTip();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -90,22 +84,22 @@ void keyboardListener(unsigned char key, int x, int y) {
             camera.print();
 
         case 'q':
-            qw.updateAngle(3.0);
+            gun.qw.updateAngle(3.0);
             break;
         case 'w':
-            qw.updateAngle(-3.0);
+            gun.qw.updateAngle(-3.0);
             break;
         case 'e':
-            er.updateAngle(3.0);
+            gun.er.updateAngle(3.0);
             break;
         case 'r':
-            er.updateAngle(-3.0);
+            gun.er.updateAngle(-3.0);
             break;
         case 'd':
-            df.updateAngle(3.0);
+            gun.df.updateAngle(3.0);
             break;
         case 'f':
-            df.updateAngle(-3.0);
+            gun.df.updateAngle(-3.0);
             break;
         default:
             break;
