@@ -60,7 +60,7 @@ public:
             return true;
         }
         else if (dist <= (rhs.radius + radius)/1.5) {
-            rhs.pos = rhs.pos + Vector(getRandomFloat(), getRandomFloat(), 0).normalize() * Bubble::speed * rhs.radius;
+            rhs.pos = rhs.pos + rhs.direction * Bubble::speed * rhs.radius;
         }
         return false;
 
