@@ -132,7 +132,7 @@ public:
         }
     }
 
-    void drawGunBase() {
+    void drawBase() {
         Vector points[stacks + 1][slices + 1];
         int i, j;
         double h, r;

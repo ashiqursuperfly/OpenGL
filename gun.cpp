@@ -39,7 +39,7 @@ void display() {
     // TODO: draw objects here
     gun.drawBarrel();
     gun.drawTip();
-    gun.drawGunBase();
+    gun.drawBase();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();

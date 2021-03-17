@@ -16,9 +16,9 @@ public:
     Camera() {
 
         pos = Vector();
-        pos.x = 50;
-        pos.y = 50;
-        pos.z = 50;
+        pos.x = 100;
+        pos.y = 100;
+        pos.z = 100;
 
         u.x = 0;
         u.y = 0;
