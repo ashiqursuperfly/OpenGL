@@ -22,10 +22,12 @@ public:
 
     Rotation(const Vector &axis, float angleDegrees, float maxAngle) : axis(axis), angleDegrees(angleDegrees), maxAngle(maxAngle) {}
 
-    void updateAngle(float del) {
+    bool updateAngle(float del) {
         if (std::abs(angleDegrees + del) < maxAngle) {
             angleDegrees += del;
+            return true;
         }
+        return false;
     }
 };
 
@@ -95,20 +97,20 @@ void drawGrid(int lines, int len, int spacing) {
 void drawRectXY(Vector tl, Vector tr, Vector bl, Vector br) {
 
     //glColor3f(1.0,0.0,0.0);
-    glBegin(GL_LINES);
+    glBegin(GL_QUADS);
 
     {
-        glVertex3f(tl.x, tl.y, 0);
-        glVertex3f(tr.x, tr.y, 0);
+        glVertex3f(tl.x, tl.y, tl.z);
+        glVertex3f(tr.x, tr.y, tr.z);
 
-        glVertex3f(bl.x, bl.y, 0);
-        glVertex3f(br.x, br.y, 0);
+        glVertex3f(bl.x, bl.y, bl.z);
+        glVertex3f(br.x, br.y, br.z);
 
-        glVertex3f(tl.x, tl.y, 0);
-        glVertex3f(bl.x, bl.y, 0);
+        glVertex3f(tl.x, tl.y, tl.z);
+        glVertex3f(bl.x, bl.y, bl.z);
 
-        glVertex3f(tr.x, tr.y, 0);
-        glVertex3f(br.x, br.y, 0);
+        glVertex3f(tr.x, tr.y, tr.z);
+        glVertex3f(br.x, br.y, br.z);
     }
 
 

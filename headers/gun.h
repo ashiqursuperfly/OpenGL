@@ -18,16 +18,44 @@ private:
     float tipLength = barrelLength;
     float barrelBaseLength = barrelLength * 0.2f;
     float baseSphereRadius = barrelRadius * 3.0f;
+
+    Vector bullets[100];
+    int bulletsUsed = 0;
+
     Vector center = Vector();
+    Vector initialGunPoint = Vector(0, 0, barrelLength);
+    Vector gunPoint = Vector(0, 0, barrelLength);
 
 
-public:
-    Rotation qw = Rotation(Vector(0, 1, 0), 0, 15);
-    Rotation as = Rotation(Vector(1, 0, 0), 0, 15);
-    Rotation er = Rotation(Vector(1, 0, 0), 0, 20);
-    Rotation df = Rotation(Vector(0, 0, 0), 0, 45);
+    void drawBullets() {
+
+        float bulletWidth = 2.0;
+
+        for (int i = 0; i < bulletsUsed; ++i) {
+            glColor3f(1.0, 0.0, 0.0);
+            glBegin(GL_QUADS);
+            {
+                Vector b = bullets[i];
+                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 20);
+                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 20);
+
+                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 20);
+                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 20);
+
+
+                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 20);
+                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 20);
+
+                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 20);
+                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 20);
+
+            }
+            glEnd();
+        }
+    }
 
     void drawTip() {
+
         Vector points[stacks + 1][slices + 1];
         int i, j;
         double h, r;
@@ -74,7 +102,7 @@ public:
             }
         }
     }
-    
+
     void drawBarrel() {
 
         Vector points[stacks + 1][slices + 1];
@@ -133,6 +161,7 @@ public:
     }
 
     void drawBase() {
+
         Vector points[stacks + 1][slices + 1];
         int i, j;
         double h, r;
@@ -177,4 +206,52 @@ public:
             }
         }
     }
+
+public:
+    Rotation qw = Rotation(Vector(0, 1, 0), 0, 15);
+    Rotation as = Rotation(Vector(1, 0, 0), 0, 15);
+    Rotation er = Rotation(Vector(1, 0, 0), 0, 20);
+    Rotation df = Rotation(Vector(0, 0, 0), 0, 45);
+
+    Vector & getBullet(int idx) {
+        return bullets[idx];
+    }
+
+    void setBullet(int idx, Vector & updated) {
+        bullets[idx] = updated;
+    }
+
+    void updateGunPoint() {
+        gunPoint = initialGunPoint.rotate(qw.axis, qw.angleDegrees);
+        gunPoint = gunPoint.rotate(er.axis, er.angleDegrees);
+        gunPoint = gunPoint.rotate(as.axis, as.angleDegrees);
+        std::cout<<"GunPoint:";
+        gunPoint.print();
+        std::cout<<"\n";
+    }
+
+    void shoot(const Vector & target) {
+        Vector pointingVector = gunPoint - center;
+
+        double ratio = std::abs(target.z / pointingVector.z);
+
+        Vector bulletFinalPoint = pointingVector * ratio;
+
+        bullets[bulletsUsed] = bulletFinalPoint;
+
+        std::cout<<"Shoot:";
+        bulletFinalPoint.print();
+        std::cout<<"\n";
+
+        bulletsUsed++;
+    }
+
+    void draw() {
+        drawTip();
+        drawBarrel();
+        drawBase();
+        drawBullets();
+    }
+
+
 };

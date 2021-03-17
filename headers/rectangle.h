@@ -47,7 +47,24 @@ public:
 
     void draw() {
         glColor3f(0, 1.0, 0);
-        drawRectXY(tl, tr, bl, br);
+        glBegin(GL_LINES);
+
+        {
+            glVertex3f(tl.x, tl.y, tl.z);
+            glVertex3f(tr.x, tr.y, tr.z);
+
+            glVertex3f(bl.x, bl.y, bl.z);
+            glVertex3f(br.x, br.y, br.z);
+
+            glVertex3f(tl.x, tl.y, tl.z);
+            glVertex3f(bl.x, bl.y, bl.z);
+
+            glVertex3f(tr.x, tr.y, tr.z);
+            glVertex3f(br.x, br.y, br.z);
+        }
+
+
+        glEnd();
     }
 
 };

@@ -4,6 +4,10 @@
 
 #include "headers/util.h"
 #include "headers/gun.h"
+
+#define HEIGHT 500
+#define WIDTH 500
+
 /**
  * Marks:
  * draw sphere: 4
@@ -31,15 +35,11 @@ void display() {
 
 
     drawAxes(9999);
-    // glColor3f(1.0, 1.0, 1.0);
-    //drawGrid(6, 80, 10);
-
     glColor3f(1.0, 1.0, 1.0);
 
-    // TODO: draw objects here
-    gun.drawBarrel();
-    gun.drawTip();
-    gun.drawBase();
+    gun.draw();
+    glColor3f(0.69, 0.69, 0.69);
+    drawRectXY(Vector(-WIDTH/7.0, HEIGHT/7.0, 200),Vector(WIDTH/7.0, HEIGHT/7.0, 200), Vector(-WIDTH/7.0, -HEIGHT/7.0, 200),  Vector(WIDTH/7.0, -HEIGHT/7.0, 200));
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -48,6 +48,20 @@ void display() {
 void animate() {
     // TODO: what you want to do in the idle time (when no drawing is occuring)
     glutPostRedisplay();
+}
+
+void mouseListener(int button, int state, int x, int y) {    //x, y is the x-y of the screen (2D)
+
+    switch (button) {
+        case GLUT_RIGHT_BUTTON:
+            if (state == GLUT_DOWN) {// 2 times?? in ONE click? -- solution is checking DOWN or UP
+                gun.shoot(Vector(0, 0, 200));
+            }
+            break;
+
+        default:
+            break;
+    }
 }
 
 void keyboardListener(unsigned char key, int x, int y) {
@@ -86,22 +100,34 @@ void keyboardListener(unsigned char key, int x, int y) {
             break;
 
         case 'q':
-            gun.qw.updateAngle(1.0);
+            if (gun.qw.updateAngle(1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 'w':
-            gun.qw.updateAngle(-1.0);
+            if (gun.qw.updateAngle(-1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 'e':
-            gun.er.updateAngle(1.0);
+            if (gun.er.updateAngle(1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 'r':
-            gun.er.updateAngle(-1.0);
+            if (gun.er.updateAngle(-1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 'a':
-            gun.as.updateAngle(1.0);
+            if (gun.as.updateAngle(1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 's':
-            gun.as.updateAngle(-1.0);
+            if (gun.as.updateAngle(-1.0)) {
+                gun.updateGunPoint();
+            }
             break;
         case 'd':
             gun.df.updateAngle(1.0);
@@ -181,7 +207,7 @@ void init() {
 int main(int argc, char **argv) {
 
     glutInit(&argc, argv);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(WIDTH, HEIGHT);
     glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);    //Depth, Double buffer, RGB color
 
@@ -197,6 +223,7 @@ int main(int argc, char **argv) {
     // TODO: register listeners here
     registerSpecialKeysListener(specialKeyListener);
     registerKeyboardListener(keyboardListener);
+    registerMouseListener(mouseListener);
 
     glutMainLoop();        //The main loop of OpenGL
 
