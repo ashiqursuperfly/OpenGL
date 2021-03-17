@@ -82,6 +82,7 @@ void keyboardListener(unsigned char key, int x, int y) {
             camera.r = camera.r.rotate(camera.l, 1.5);
             camera.u = camera.r * camera.l;
             camera.print();
+            break;
 
         case 'q':
             gun.qw.updateAngle(3.0);

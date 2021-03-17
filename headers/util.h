@@ -22,7 +22,7 @@ public:
     Rotation(const Vector &axis, float angleDegrees) : axis(axis), angleDegrees(angleDegrees) {}
 
     void updateAngle(float del) {
-        if (std::abs(angleDegrees + del) < 30) {
+        if (std::abs(angleDegrees + del) < 45) {
             angleDegrees += del;
         }
     }
@@ -184,7 +184,8 @@ void drawCone(double radius, double height, int segments) {
     }
 }
 
-void drawSphere(double radius, int slices, int stacks, Vector center, Rotation & qw, Rotation & er) {
+
+void drawSphere(double radius, int slices, int stacks, Vector center) {
 
     Vector points[stacks + 1][slices + 1];
     int i, j;
@@ -199,8 +200,6 @@ void drawSphere(double radius, int slices, int stacks, Vector center, Rotation &
             points[i][j].x = r * cos(angle) + center.x;
             points[i][j].y = r * sin(angle) + center.y;
             points[i][j].z = h ;
-            points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
-            points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
         }
     }
 

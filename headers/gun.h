@@ -12,11 +12,12 @@ private:
     int stacks = 200;
     int slices = 50;
     float barrelRadius = 5.0;
-    float barrelLength = 50.0;
-    float tipInnerRadius = barrelRadius * 0.6f;
-    float tipOutRadius = barrelRadius * 1.1f;
-    float tipLength = barrelLength + 3;
-    Vector center = Vector(0, 0, 0);
+    float barrelLength = 70.0;
+    float tipInnerRadius = barrelRadius * 0.2f;
+    float tipOutRadius = barrelRadius * 1.5f;
+    float tipLength = barrelLength;
+    float barrelBaseLength = barrelLength * 0.2f;
+    Vector center = Vector();
 
 
 public:
@@ -56,6 +57,10 @@ public:
                     glColor3f(color, color, color);
                     color = 1 - color;
 
+                    if (points[i][j].z < barrelBaseLength || points[i + 1][j].z < barrelBaseLength || points[i][j + 1].z < barrelBaseLength || points[i+1][j+1].z < barrelBaseLength ){
+                        continue;
+                    }
+
                     glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
                     glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
                     glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
@@ -68,6 +73,7 @@ public:
     }
     
     void drawBarrel() {
+
         Vector points[stacks + 1][slices + 1];
         int i, j;
         double h, r;
@@ -75,11 +81,28 @@ public:
         for (i = 0; i <= stacks; i++) {
             h = barrelLength * sin(((double) i / (double) stacks) * (pi / 2));
             r = barrelRadius;
+
             for (j = 0; j <= slices; j++) {
                 double angle = ((double) j / (double) slices) * 2 * pi;
+                angle += df.angleDegrees;
+
+                int baseStacks = (int) ((barrelBaseLength / barrelLength) * stacks);
+
+                if (i <= baseStacks) {
+//                    float baseRatio = barrelBaseLength / barrelLength;
+//                    float baseStacks = stacks * baseRatio;
+                    h = barrelBaseLength * sin(((double) i / (double) baseStacks) * (pi / 2));
+                    r = barrelRadius * cos(((double) i / (double) baseStacks) * (pi / 2));
+                }
+
                 points[i][j].x = r * cos(angle) + center.x;
                 points[i][j].y = r * sin(angle) + center.y;
                 points[i][j].z = h;
+
+                if (i <= baseStacks) {
+                    points[i][j] = points[i][j].rotate(Vector(0,0,1), 180) + Vector(0, 0, barrelBaseLength * 2);
+                }
+
                 points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
                 points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
             }
