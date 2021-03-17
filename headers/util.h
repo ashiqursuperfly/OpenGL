@@ -18,11 +18,12 @@ class Rotation {
 public:
     Vector axis;
     float angleDegrees;
+    float maxAngle;
 
-    Rotation(const Vector &axis, float angleDegrees) : axis(axis), angleDegrees(angleDegrees) {}
+    Rotation(const Vector &axis, float angleDegrees, float maxAngle) : axis(axis), angleDegrees(angleDegrees), maxAngle(maxAngle) {}
 
     void updateAngle(float del) {
-        if (std::abs(angleDegrees + del) < 45) {
+        if (std::abs(angleDegrees + del) < maxAngle) {
             angleDegrees += del;
         }
     }

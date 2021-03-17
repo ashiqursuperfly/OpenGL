@@ -11,21 +11,21 @@ class Gun {
 private:
     int stacks = 200;
     int slices = 50;
-    float barrelRadius = 5.0;
-    float barrelLength = 70.0;
+    float barrelRadius = 6.0;
+    float barrelLength = 80.0;
     float tipInnerRadius = barrelRadius * 0.2f;
     float tipOutRadius = barrelRadius * 1.5f;
     float tipLength = barrelLength;
     float barrelBaseLength = barrelLength * 0.2f;
-    float baseSphereRadius = barrelRadius * 3;
+    float baseSphereRadius = barrelRadius * 3.0f;
     Vector center = Vector();
 
 
 public:
-    Rotation qw = Rotation(Vector(0, 1, 0), 0);
-    Rotation as = Rotation(Vector(1, 0, 0), 0);
-    Rotation er = Rotation(Vector(1, 0, 0), 0);
-    Rotation df = Rotation(Vector(0, 0, 0), 0);
+    Rotation qw = Rotation(Vector(0, 1, 0), 0, 15);
+    Rotation as = Rotation(Vector(1, 0, 0), 0, 15);
+    Rotation er = Rotation(Vector(1, 0, 0), 0, 20);
+    Rotation df = Rotation(Vector(0, 0, 0), 0, 45);
 
     void drawTip() {
         Vector points[stacks + 1][slices + 1];

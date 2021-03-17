@@ -86,28 +86,28 @@ void keyboardListener(unsigned char key, int x, int y) {
             break;
 
         case 'q':
-            gun.qw.updateAngle(3.0);
+            gun.qw.updateAngle(1.0);
             break;
         case 'w':
-            gun.qw.updateAngle(-3.0);
+            gun.qw.updateAngle(-1.0);
             break;
         case 'e':
-            gun.er.updateAngle(3.0);
+            gun.er.updateAngle(1.0);
             break;
         case 'r':
-            gun.er.updateAngle(-3.0);
+            gun.er.updateAngle(-1.0);
             break;
         case 'a':
-            gun.as.updateAngle(3.0);
+            gun.as.updateAngle(1.0);
             break;
         case 's':
-            gun.as.updateAngle(-3.0);
+            gun.as.updateAngle(-1.0);
             break;
         case 'd':
-            gun.df.updateAngle(3.0);
+            gun.df.updateAngle(1.0);
             break;
         case 'f':
-            gun.df.updateAngle(-3.0);
+            gun.df.updateAngle(-1.0);
             break;
         default:
             break;
