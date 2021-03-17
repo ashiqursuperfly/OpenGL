@@ -39,6 +39,7 @@ void display() {
     // TODO: draw objects here
     gun.drawBarrel();
     gun.drawTip();
+    gun.drawGunBase();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -95,6 +96,12 @@ void keyboardListener(unsigned char key, int x, int y) {
             break;
         case 'r':
             gun.er.updateAngle(-3.0);
+            break;
+        case 'a':
+            gun.as.updateAngle(3.0);
+            break;
+        case 's':
+            gun.as.updateAngle(-3.0);
             break;
         case 'd':
             gun.df.updateAngle(3.0);
