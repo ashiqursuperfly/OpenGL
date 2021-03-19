@@ -10,7 +10,7 @@
 class Gun {
 private:
     int stacks = 200;
-    int slices = 50;
+    int slices = 90;
     float barrelRadius = 6.0;
     float barrelLength = 80.0;
     float tipInnerRadius = barrelRadius * 0.2f;
@@ -175,7 +175,6 @@ private:
                 points[i][j].x = r * cos(angle) + center.x;
                 points[i][j].y = r * sin(angle) + center.y;
                 points[i][j].z = h ;
-                points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
                 points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
             }
         }
@@ -191,15 +190,23 @@ private:
                     glColor3f(color, color, color);
                     color = 1 - color;
                     //upper hemisphere
-                    glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
-                    glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
-                    glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
-                    glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z + points[i + 1][j].z);
+                    Vector p1 = points[i][j].rotate(qw.axis, qw.angleDegrees);
+                    Vector p2 = points[i][j + 1].rotate(qw.axis, qw.angleDegrees);
+                    Vector p3 = points[i + 1][j + 1].rotate(qw.axis, qw.angleDegrees);
+                    Vector p4 = points[i + 1][j].rotate(qw.axis, qw.angleDegrees);
+                    glVertex3f(p1.x, p1.y, center. z + p1.z);
+                    glVertex3f(p2.x, p2.y, center. z + p2.z);
+                    glVertex3f(p3.x, p3.y, center. z + p3.z);
+                    glVertex3f(p4.x, p4.y, center. z + p4.z);
                     //lower hemisphere
-                    glVertex3f(points[i][j].x, points[i][j].y, center. z - points[i][j].z);
-                    glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z - points[i][j + 1].z);
-                    glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z - points[i + 1][j + 1].z);
-                    glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z - points[i + 1][j].z);
+                    p1 = points[i][j].rotate(qw.axis, 360 - qw.angleDegrees);
+                    p2 = points[i][j + 1].rotate(qw.axis, 360 - qw.angleDegrees);
+                    p3 = points[i + 1][j + 1].rotate(qw.axis, 360 - qw.angleDegrees);
+                    p4 = points[i + 1][j].rotate(qw.axis, 360 - qw.angleDegrees);
+                    glVertex3f(p1.x, p1.y, center. z - p1.z);
+                    glVertex3f(p2.x, p2.y, center. z - p2.z);
+                    glVertex3f(p3.x, p3.y, center. z - p3.z);
+                    glVertex3f(p4.x, p4.y, center. z - p4.z);
                 }
 
                 glEnd();
@@ -208,9 +215,9 @@ private:
     }
 
 public:
-    Rotation qw = Rotation(Vector(0, 1, 0), 0, 15);
-    Rotation as = Rotation(Vector(1, 0, 0), 0, 15);
-    Rotation er = Rotation(Vector(1, 0, 0), 0, 20);
+    Rotation qw = Rotation(Vector(1, 0, 0), 0, 45);
+    Rotation as = Rotation(Vector(0, 1, 0), 0, 45);
+    Rotation er = Rotation(Vector(0, 1, 0), 0, 45);
     Rotation df = Rotation(Vector(0, 0, 0), 0, 45);
 
     Vector & getBullet(int idx) {
