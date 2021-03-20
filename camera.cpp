@@ -1,7 +1,7 @@
 //
 // Created by ashiq on 3/14/21.
 //
-#include "headers/util.h"
+#include "headers/1605103_util.h"
 
 Camera camera;
 
@@ -25,14 +25,11 @@ void display() {
     drawSphere(50, 30, 50);
 
 
-    // TODO: draw objects here
-
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
 }
 
 void animate() {
-    // TODO: what you want to do in the idle time (when no drawing is occuring)
     glutPostRedisplay();
 }
 
@@ -154,7 +151,6 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutIdleFunc(animate);
 
-    // TODO: register listeners here
     registerSpecialKeysListener(specialKeyListener);
     registerKeyboardListener(keyboardListener);
 

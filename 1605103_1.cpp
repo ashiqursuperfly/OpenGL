@@ -2,10 +2,10 @@
 // Created by ashiq on 3/14/21.
 //
 
-#include "headers/util.h"
-#include "headers/rectangle.h"
-#include "headers/bubble.h"
-#include "headers/circle.h"
+#include "headers/1605103_util.h"
+#include "headers/1605103_rectangle.h"
+#include "headers/1605103_bubble.h"
+#include "headers/1605103_circle.h"
 
 #define HEIGHT 600
 #define WIDTH 600

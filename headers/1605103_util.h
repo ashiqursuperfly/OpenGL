@@ -11,8 +11,8 @@
 #include <iostream>
 #include <random>
 #include <GL/glut.h>
-#include "vector.h"
-#include "camera.h"
+#include "1605103_vector.h"
+#include "1605103_camera.h"
 
 float getRandomFloat() {
     std::random_device rd;

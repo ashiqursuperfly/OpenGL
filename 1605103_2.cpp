@@ -2,9 +2,9 @@
 // Created by ashiq on 3/14/21.
 //
 
-#include "headers/util.h"
-#include "headers/rotation.h"
-#include "headers/gun.h"
+#include "headers/1605103_util.h"
+#include "headers/1605103_rotation.h"
+#include "headers/1605103_gun.h"
 
 #define HEIGHT 500
 #define WIDTH 500
@@ -16,6 +16,10 @@
  * handling rotations 12
  * drawing bullets on plane
  */
+
+#define TARGET_WIDTH (WIDTH / 7.0)
+#define TARGET_HEIGHT (HEIGHT / 7.0)
+#define TARGET_DISTANCE 200
 
 Camera camera;
 Gun gun;
@@ -40,14 +44,13 @@ void display() {
 
     gun.draw();
     glColor3f(0.69, 0.69, 0.69);
-    drawRectXY(Vector(-WIDTH/7.0, HEIGHT/7.0, 200),Vector(WIDTH/7.0, HEIGHT/7.0, 200), Vector(-WIDTH/7.0, -HEIGHT/7.0, 200),  Vector(WIDTH/7.0, -HEIGHT/7.0, 200));
+    drawRectXY(Vector(-TARGET_WIDTH, TARGET_HEIGHT, TARGET_DISTANCE),Vector(TARGET_WIDTH, TARGET_HEIGHT, TARGET_DISTANCE), Vector(-TARGET_WIDTH, -TARGET_HEIGHT, TARGET_DISTANCE),  Vector(TARGET_WIDTH, -TARGET_HEIGHT, TARGET_DISTANCE));
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
 }
 
 void animate() {
-    // TODO: what you want to do in the idle time (when no drawing is occuring)
     glutPostRedisplay();
 }
 
@@ -56,7 +59,7 @@ void mouseListener(int button, int state, int x, int y) {    //x, y is the x-y o
     switch (button) {
         case GLUT_RIGHT_BUTTON:
             if (state == GLUT_DOWN) {// 2 times?? in ONE click? -- solution is checking DOWN or UP
-                gun.shoot(Vector(0, 0, 200));
+                gun.shoot(Vector(TARGET_WIDTH, TARGET_HEIGHT, TARGET_DISTANCE));
             }
             break;
 
@@ -221,7 +224,6 @@ int main(int argc, char **argv) {
     glutDisplayFunc(display);
     glutIdleFunc(animate);
 
-    // TODO: register listeners here
     registerSpecialKeysListener(specialKeyListener);
     registerKeyboardListener(keyboardListener);
     registerMouseListener(mouseListener);

@@ -29,25 +29,25 @@ private:
 
     void drawBullets() {
 
-        float bulletWidth = 2.0;
+        float bulletWidth = 3.0;
 
         for (int i = 0; i < bulletsUsed; ++i) {
             glColor3f(1.0, 0.0, 0.0);
             glBegin(GL_QUADS);
             {
                 Vector b = bullets[i];
-                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 20);
-                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 20);
+                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 5);
+                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 5);
 
-                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 20);
-                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 20);
+                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 5);
+                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 5);
 
 
-                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 20);
-                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 20);
+                glVertex3f(b.x - bulletWidth, b.y + bulletWidth, b.z - 5);
+                glVertex3f(b.x + bulletWidth, b.y + bulletWidth, b.z - 5);
 
-                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 20);
-                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 20);
+                glVertex3f(b.x - bulletWidth, b.y - bulletWidth, b.z - 5);
+                glVertex3f(b.x + bulletWidth, b.y - bulletWidth, b.z - 5);
 
             }
             glEnd();
@@ -250,13 +250,18 @@ public:
 
         Vector bulletFinalPoint = pointingVector * ratio;
 
-        bullets[bulletsUsed] = bulletFinalPoint;
+        if (bulletFinalPoint.x >= -target.x && bulletFinalPoint.x <= target.x) {
+            if (bulletFinalPoint.y >= -target.y && bulletFinalPoint.y <= target.y) {
+                bullets[bulletsUsed] = bulletFinalPoint;
 
-        std::cout<<"Shoot:";
-        bulletFinalPoint.print();
-        std::cout<<"\n";
+                std::cout<<"Hit Target:";
+                bulletFinalPoint.print();
+                std::cout<<"\n";
 
-        bulletsUsed++;
+                bulletsUsed++;
+            }
+        }
+
     }
 
     void draw() {
