@@ -109,6 +109,8 @@ private:
         int i, j;
         double h, r;
 
+        int baseStacks = (int) ((barrelBaseLength * (float)stacks) / barrelLength);
+
         for (i = 0; i <= stacks; i++) {
             h = barrelLength * sin(((double) i / (double) stacks) * (pi / 2));
             r = barrelRadius;
@@ -117,9 +119,7 @@ private:
                 double angle = ((double) j / (double) slices) * 2 * pi;
                 angle += df.angleDegrees;
 
-                int baseStacks = (int) ((barrelBaseLength / barrelLength) * stacks);
-
-                if (i <= baseStacks) {
+                if (i < baseStacks) {
 //                    float baseRatio = barrelBaseLength / barrelLength;
 //                    float baseStacks = stacks * baseRatio;
                     h = barrelBaseLength * sin(((double) i / (double) baseStacks) * (pi / 2));
@@ -130,8 +130,8 @@ private:
                 points[i][j].y = r * sin(angle) + center.y;
                 points[i][j].z = h;
 
-                if (i <= baseStacks) {
-                    points[i][j] = points[i][j].rotate(Vector(0,0,1), 180) + Vector(0, 0, barrelBaseLength * 2);
+                if (i < baseStacks) {
+                    points[i][j] = points[i][j].rotate(Vector(0,0,1), 180) + Vector(0, 0, barrelBaseLength * 1.6);
                 }
 
                 points[i][j] = points[i][j].rotate(qw.axis, qw.angleDegrees);
@@ -141,20 +141,24 @@ private:
         }
 
         int color = 0;
+        int colorAlternate = 1;
         for (i = 0; i < stacks; i++) {
             for (j = 0; j < slices; j++) {
                 glBegin(GL_QUADS);
-
                 {
-                    glColor3f(color, color, color);
+                    if (i >= baseStacks){
+                        glColor3f(color, color, color);
+                    }
+                    else glColor3f(colorAlternate, colorAlternate, colorAlternate);
+
                     color = 1 - color;
+                    colorAlternate = 1 - colorAlternate;
 
                     glVertex3f(points[i][j].x, points[i][j].y, center. z + points[i][j].z);
                     glVertex3f(points[i][j + 1].x, points[i][j + 1].y, center. z + points[i][j + 1].z);
                     glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, center. z + points[i + 1][j + 1].z);
                     glVertex3f(points[i + 1][j].x, points[i + 1][j].y, center. z + points[i + 1][j].z);
                 }
-
                 glEnd();
             }
         }
@@ -174,10 +178,12 @@ private:
                 double angle = ((double) j / (double) slices) * 2 * pi;
                 points[i][j].x = r * cos(angle) + center.x;
                 points[i][j].y = r * sin(angle) + center.y;
-                points[i][j].z = h ;
+                points[i][j].z = h;
                 points[i][j] = points[i][j].rotate(er.axis, er.angleDegrees);
             }
         }
+
+        Vector centerSphere = Vector(center.x, center.y, center.z - 5);
 
         int color = 0;
         //draw quads using generated points
@@ -194,19 +200,19 @@ private:
                     Vector p2 = points[i][j + 1].rotate(qw.axis, qw.angleDegrees);
                     Vector p3 = points[i + 1][j + 1].rotate(qw.axis, qw.angleDegrees);
                     Vector p4 = points[i + 1][j].rotate(qw.axis, qw.angleDegrees);
-                    glVertex3f(p1.x, p1.y, center. z + p1.z);
-                    glVertex3f(p2.x, p2.y, center. z + p2.z);
-                    glVertex3f(p3.x, p3.y, center. z + p3.z);
-                    glVertex3f(p4.x, p4.y, center. z + p4.z);
+                    glVertex3f(p1.x, p1.y, centerSphere. z + p1.z);
+                    glVertex3f(p2.x, p2.y, centerSphere. z + p2.z);
+                    glVertex3f(p3.x, p3.y, centerSphere. z + p3.z);
+                    glVertex3f(p4.x, p4.y, centerSphere. z + p4.z);
                     //lower hemisphere
                     p1 = points[i][j].rotate(qw.axis, 360 - qw.angleDegrees);
                     p2 = points[i][j + 1].rotate(qw.axis, 360 - qw.angleDegrees);
                     p3 = points[i + 1][j + 1].rotate(qw.axis, 360 - qw.angleDegrees);
                     p4 = points[i + 1][j].rotate(qw.axis, 360 - qw.angleDegrees);
-                    glVertex3f(p1.x, p1.y, center. z - p1.z);
-                    glVertex3f(p2.x, p2.y, center. z - p2.z);
-                    glVertex3f(p3.x, p3.y, center. z - p3.z);
-                    glVertex3f(p4.x, p4.y, center. z - p4.z);
+                    glVertex3f(p1.x, p1.y, centerSphere. z - p1.z);
+                    glVertex3f(p2.x, p2.y, centerSphere. z - p2.z);
+                    glVertex3f(p3.x, p3.y, centerSphere. z - p3.z);
+                    glVertex3f(p4.x, p4.y, centerSphere. z - p4.z);
                 }
 
                 glEnd();
