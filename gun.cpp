@@ -3,6 +3,7 @@
 //
 
 #include "headers/util.h"
+#include "headers/rotation.h"
 #include "headers/gun.h"
 
 #define HEIGHT 500

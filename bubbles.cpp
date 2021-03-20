@@ -137,6 +137,8 @@ void bubbleBubbleCollisionLogic() {
 
         Bubble * b1 = bubbles[i];
 
+        if (b1->state == OUTER) continue;
+
         if (!b1->isVisible || b1->state == OUTER) continue;
 
         for (int j = 0; j < BUBBLE_COUNT && !PAUSE; ++j) {

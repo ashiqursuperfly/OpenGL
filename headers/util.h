@@ -14,23 +14,6 @@
 #include "vector.h"
 #include "camera.h"
 
-class Rotation {
-public:
-    Vector axis;
-    float angleDegrees;
-    float maxAngle;
-
-    Rotation(const Vector &axis, float angleDegrees, float maxAngle) : axis(axis), angleDegrees(angleDegrees), maxAngle(maxAngle) {}
-
-    bool updateAngle(float del) {
-        if (std::abs(angleDegrees + del) < maxAngle) {
-            angleDegrees += del;
-            return true;
-        }
-        return false;
-    }
-};
-
 float getRandomFloat() {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -252,82 +235,6 @@ void registerMouseListener(void (*listener)(int, int, int, int)) {
 void registerSpecialKeysListener(void (*listener)(int, int, int)) {
     glutSpecialFunc(listener);
 }
-
-
-/*
-void keyboardListener(unsigned char key, int x, int y) {
-
-    switch (key) {
-        case '1':
-            break;
-
-        default:
-            break;
-    }
-
-}
-
-
-void specialKeyListener(int key, int x, int y) {
-
-    switch (key) {
-
-        case GLUT_KEY_DOWN:
-            break;
-        case GLUT_KEY_UP:
-            break;
-
-        case GLUT_KEY_RIGHT:
-            break;
-        case GLUT_KEY_LEFT:
-            break;
-
-
-        case GLUT_KEY_PAGE_UP:
-            break;
-        case GLUT_KEY_PAGE_DOWN:
-            break;
-
-        case GLUT_KEY_INSERT:
-            break;
-
-        case GLUT_KEY_HOME:
-            break;
-        case GLUT_KEY_END:
-            break;
-
-        default:
-            break;
-
-
-    }
-
-}
-
-
-void mouseListener(int button, int state, int x, int y) {    //x, y is the x-y of the screen (2D)
-
-    switch (button) {
-        case GLUT_LEFT_BUTTON:
-            if (state == GLUT_DOWN) {        // 2 times?? in ONE click? -- solution is checking DOWN or UP
-            }
-            break;
-
-        case GLUT_RIGHT_BUTTON:
-            //........
-            break;
-
-        case GLUT_MIDDLE_BUTTON:
-            //........
-            break;
-
-        default:
-            break;
-    }
-}
-
-*/
-
 
 
 

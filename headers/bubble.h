@@ -31,14 +31,6 @@ public:
         state = OUTER;
     }
 
-    Bubble(const Vector &pos) {
-        this -> pos = pos;
-        direction = Vector(getRandomFloat(), getRandomFloat(), 0).normalize();
-        radius = 7.00;
-        isVisible = false;
-        state = OUTER;
-    }
-
     static void updateSpeed(float delta) {
 
         float temp = Bubble::speed + delta;
@@ -82,6 +74,6 @@ public:
     }
 };
 
-float Bubble::MAX_SPEED = 0.5;
+float Bubble::MAX_SPEED = 0.3;
 float Bubble::speed = 0.1;
 
