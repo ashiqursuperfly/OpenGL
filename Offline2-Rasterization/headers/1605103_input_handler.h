@@ -138,7 +138,7 @@ public:
     static Vector transformPoint(const Matrix &M, const Vector point) {
 
         auto result = (M * Matrix::ColumnMatrix(point));
-        return Vector(result.matrix[0][0], result.matrix[1][0], result.matrix[2][0]) / result.W();
+        return Vector(result.data[0][0], result.data[1][0], result.data[2][0]) / result.getW();
     }
 
     static Vector Rodrigues(const Vector& x, const Vector& a, const double angle) {
