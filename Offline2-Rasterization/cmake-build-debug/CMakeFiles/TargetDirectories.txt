@@ -1,0 +1,3 @@
+/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/cmake-build-debug/CMakeFiles/Offline2.dir
