@@ -44,10 +44,10 @@ public:
         double fovY, aspectRatio, near, far;
         cin >> fovY >> aspectRatio >> near >> far;
 
-        VTM = Matrix::ViewTransformationMatrix(eye, look, up);
-        PM = Matrix::ProjectionMatrix(near, far, fovY, aspectRatio);
+        VTM = Matrix::viewTransformation(eye, look, up);
+        PM = Matrix::projection(near, far, fovY, aspectRatio);
 
-        currentStack.push(Matrix::IdentityMatrix(4, 4));
+        currentStack.push(Matrix::identity(4, 4));
     }
 
     void processInput() {
@@ -60,7 +60,7 @@ public:
                 processTriangle();
             } else if (command == "translate") {
                 processTranslate();
-            } else if (command == "scale") {
+            } else if (command == "scaling") {
                 processScale();
             } else if (command == "rotate") {
                 processRotate();
@@ -105,7 +105,7 @@ public:
         double dx, dy, dz;
         cin >> dx >> dy >> dz;
 
-        auto t = Matrix::TranslationMatrix(dx, dy, dz);
+        auto t = Matrix::translation(dx, dy, dz);
 
         currentStack.push(currentStack.top() * t);
     }
@@ -114,7 +114,7 @@ public:
         double sx, sy, sz;
         cin >> sx >> sy >> sz;
 
-        auto t = Matrix::ScalingMatrix(sx, sy, sz);
+        auto t = Matrix::scaling(sx, sy, sz);
 
         currentStack.push(currentStack.top() * t);
     }
@@ -126,22 +126,22 @@ public:
 
         axis = axis.normalize();
 
-        auto col1 = Rodrigues(Vector::I(), axis, angle);
-        auto col2 = Rodrigues(Vector::J(), axis, angle);
-        auto col3 = Rodrigues(Vector::K(), axis, angle);
+        auto col1 = rodrigues(Vector::I(), axis, angle);
+        auto col2 = rodrigues(Vector::J(), axis, angle);
+        auto col3 = rodrigues(Vector::K(), axis, angle);
 
-        auto r = Matrix::RotationMatrix(col1, col2, col3);
+        auto r = Matrix::rotation(col1, col2, col3);
 
         currentStack.push(currentStack.top() * r);
     }
 
     static Vector transformPoint(const Matrix &M, const Vector point) {
 
-        auto result = (M * Matrix::ColumnMatrix(point));
+        auto result = (M * Matrix::column(point));
         return Vector(result.data[0][0], result.data[1][0], result.data[2][0]) / result.getW();
     }
 
-    static Vector Rodrigues(const Vector& x, const Vector& a, const double angle) {
+    static Vector rodrigues(const Vector& x, const Vector& a, const double angle) {
 
         auto cost = cos(rad(angle));
         auto sint = sin(rad(angle));
