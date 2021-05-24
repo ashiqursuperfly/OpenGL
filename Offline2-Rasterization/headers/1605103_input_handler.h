@@ -32,9 +32,9 @@ public:
             return;
         }
 
-        osStage1.open("outputs/osStage1.txt");
-        osStage2.open("outputs/osStage2.txt");
-        osStage3.open("outputs/osStage3.txt");
+        osStage1.open("outputs/stage1.txt");
+        osStage2.open("outputs/stage2.txt");
+        osStage3.open("outputs/stage3.txt");
         osStage1 << std::setprecision(7) << std::fixed;
         osStage2 << std::setprecision(7) << std::fixed;
         osStage3 << std::setprecision(7) << std::fixed;

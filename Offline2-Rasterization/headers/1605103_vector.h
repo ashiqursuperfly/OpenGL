@@ -136,14 +136,14 @@ public:
         return r1 + r2;
     }
 
-    friend std::istream &operator>>(std::istream &is, Vector &Vector) {
-        is >> Vector.x >> Vector.y >> Vector.z;
+    friend std::istream &operator>>(std::istream &is, Vector &v) {
+        is >> v.x >> v.y >> v.z;
         return is;
     }
 
 
-    friend std::ostream &operator<<(std::ostream &os, const Vector &Vector) {
-        os << Vector.x << " " << Vector.y << " " << Vector.z << std::endl;
+    friend std::ostream &operator<<(std::ostream &os, const Vector &v) {
+        os << v.x << " " << v.y << " " << v.z << std::endl;
         return os;
     }
 

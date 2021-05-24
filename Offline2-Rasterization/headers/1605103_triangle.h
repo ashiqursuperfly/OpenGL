@@ -19,6 +19,11 @@ public:
         this->p2 = p2;
         this->p3 = p3;
 
-        this->color = Color();
+        this->color = Color((int)getRandomFloat(0, 255), (int)getRandomFloat(0, 255), (int)getRandomFloat(0, 255));
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const Triangle &t) {
+        os <<"Points:(\n"<< t.p1 << t.p2 << t.p3 << ")\nColor" << t.color << std::endl;
+        return os;
     }
 };

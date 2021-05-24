@@ -5,7 +5,7 @@ int main() {
     InputHandler inputHandler = InputHandler("inputs/2/scene.txt");
     inputHandler.processInput();
 
-    ZBufferExecutor zBufferExecutor = ZBufferExecutor("inputs/2/config.txt");
+    ZBufferExecutor zBufferExecutor = ZBufferExecutor("inputs/2/config.txt", "outputs/stage3.txt");
 
     return 0;
 }
