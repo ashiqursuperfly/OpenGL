@@ -7,6 +7,9 @@
 
 #endif //OFFLINE2_1605103_MATRIX_H
 
+#include <vector>
+#include <iostream>
+
 class Matrix {
 
 public:
@@ -138,7 +141,7 @@ public:
         int c2 = (int)rhs.data[0].size();
 
         if (c1 != r2) {
-            std::cout << "Invalid Matrix Multiplication: " << r1 << "x" << r2 << c1 << "x" << c2 << endl;
+            std::cout << "Invalid Matrix Multiplication: " << r1 << "x" << r2 << c1 << "x" << c2 << std::endl;
             return zero(r1, c2);
         }
 

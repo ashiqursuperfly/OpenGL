@@ -7,6 +7,13 @@
 
 #endif //OFFLINE1_VECTOR_H
 
+#include <fstream>
+#include <cmath>
+#include <iostream>
+
+#define rad(t) ((t) * pi / 180.0)
+#define pi (2*acos(0.0))
+
 class Vector {
 public:
     double x, y, z;

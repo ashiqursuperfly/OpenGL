@@ -7,20 +7,12 @@
 
 #endif //OFFLINE2_1605103_UTIL_H
 
-// dependencies for all headers
 #include <random>
-#include <vector>
 #include <iostream>
-#include <cmath>
 #include <fstream>
 #include <iterator>
-#include <string>
-#include <algorithm>
 
 using namespace std;
-
-#define rad(t) ((t) * pi / 180.0)
-#define pi (2*acos(0.0))
 
 bool compareFiles(const std::string& p1, const std::string& p2) {
     std::ifstream f1(p1, std::ifstream::binary|std::ifstream::ate);
@@ -42,10 +34,10 @@ bool compareFiles(const std::string& p1, const std::string& p2) {
                       std::istreambuf_iterator<char>(f2.rdbuf()));
 }
 
-float getRandomFloat() {
+float getRandomFloat(float max, float min) {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(-1.0, 1.0);
+    std::uniform_real_distribution<double> dist(min, max);
 
     return (float)dist(mt);
 }

@@ -82,16 +82,25 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_color.h">
+			<Option target="Offline2"/>
+		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_input_handler.h">
 			<Option target="Offline2"/>
 		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_matrix.h">
 			<Option target="Offline2"/>
 		</Unit>
+		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_triangle.h">
+			<Option target="Offline2"/>
+		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_util.h">
 			<Option target="Offline2"/>
 		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_vector.h">
+			<Option target="Offline2"/>
+		</Unit>
+		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_zbuffer.h">
 			<Option target="Offline2"/>
 		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/main.cpp">

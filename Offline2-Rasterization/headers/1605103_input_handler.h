@@ -7,42 +7,49 @@
 
 #endif //OFFLINE2_1605103_INPUT_HANDLER_H
 
+#include "1605103_vector.h"
+#include "1605103_matrix.h"
 #include <fstream>
 #include <stack>
 #include <iomanip>
-
+#include <string>
 
 class InputHandler {
 private:
-    ofstream stage1, stage2, stage3;
-    stack <Matrix> currentStack;
-    stack <stack<Matrix>> history;
+    std::ofstream osStage1, osStage2, osStage3;
+    std::stack <Matrix> currentStack;
+    std::stack <std::stack<Matrix>> history;
     Matrix VTM;
     Matrix PM;
 public:
 
     InputHandler(const char *input_scene_file = "inputs/1/scene.txt") {
-        FILE *fp;
 
-        fp = freopen(input_scene_file, "r", stdin);
+        FILE *fp = freopen(input_scene_file, "r", stdin);
 
         if (fp == nullptr) {
-            cout << "Error: No Input File Found" << endl;
-            return ;
+            std::cout << "Error: Input File Not Found" << std::endl;
+            return;
         }
 
-        stage1.open("outputs/stage1.txt");
-        stage2.open("outputs/stage2.txt");
-        stage3.open("outputs/stage3.txt");
-        stage1 << setprecision(7) << fixed;
-        stage2 << setprecision(7) << fixed;
-        stage3 << setprecision(7) << fixed;
+        osStage1.open("outputs/osStage1.txt");
+        osStage2.open("outputs/osStage2.txt");
+        osStage3.open("outputs/osStage3.txt");
+        osStage1 << std::setprecision(7) << std::fixed;
+        osStage2 << std::setprecision(7) << std::fixed;
+        osStage3 << std::setprecision(7) << std::fixed;
 
 
         Vector eye, look, up;
-        cin >> eye >> look >> up;
+        std::cin >> eye >> look >> up;
         double fovY, aspectRatio, near, far;
-        cin >> fovY >> aspectRatio >> near >> far;
+        std::cin >> fovY >> aspectRatio >> near >> far;
+
+        std::cout<<"Eye:"<<eye<<std::endl;
+        std::cout<<"Look:"<<look<<std::endl;
+        std::cout<<"Up:"<<up<<std::endl;
+
+        std::cout<<"fovY: "<<fovY<<" aspectRatio: "<<aspectRatio<<" near: "<<near<<" far: "<<far<<std::endl;
 
         VTM = Matrix::viewTransformation(eye, look, up);
         PM = Matrix::projection(near, far, fovY, aspectRatio);
@@ -52,9 +59,9 @@ public:
 
     void processInput() {
 
-        string command;
+        std::string command;
         while (true) {
-            cin >> command;
+            std::cin >> command;
 
             if (command == "triangle") {
                 processTriangle();
@@ -70,20 +77,21 @@ public:
                 currentStack = history.top();
                 history.pop();
             } else if (command == "end") {
+                std::cin.clear();
                 break;
             }
         }
 
-        stage1.close();
-        stage2.close();
-        stage3.close();
+        osStage1.close();
+        osStage2.close();
+        osStage3.close();
     }
 
     void processTriangle() {
         Vector points[3];
-        cin >> points[0];
-        cin >> points[1];
-        cin >> points[2];
+        std::cin >> points[0];
+        std::cin >> points[1];
+        std::cin >> points[2];
 
         for (const auto &p : points) {
 
@@ -91,19 +99,19 @@ public:
             auto view = transformPoint(VTM, model);
             auto projection = transformPoint(PM, view);
 
-            stage1 << model;
-            stage2 << view;
-            stage3 << projection;
+            osStage1 << model;
+            osStage2 << view;
+            osStage3 << projection;
         }
 
-        stage1 << endl;
-        stage2 << endl;
-        stage3 << endl;
+        osStage1 << std::endl;
+        osStage2 << std::endl;
+        osStage3 << std::endl;
     }
 
     void processTranslate() {
         double dx, dy, dz;
-        cin >> dx >> dy >> dz;
+        std::cin >> dx >> dy >> dz;
 
         auto t = Matrix::translation(dx, dy, dz);
 
@@ -112,7 +120,7 @@ public:
 
     void processScale() {
         double sx, sy, sz;
-        cin >> sx >> sy >> sz;
+        std::cin >> sx >> sy >> sz;
 
         auto t = Matrix::scaling(sx, sy, sz);
 
@@ -122,7 +130,7 @@ public:
     void processRotate() {
         double angle;
         Vector axis;
-        cin >> angle >> axis;
+        std::cin >> angle >> axis;
 
         axis = axis.normalize();
 
@@ -148,5 +156,4 @@ public:
 
         return x * cost  + a * ((1 - cost) * a.dot(x)) + (a * x) * sint;
     }
-
 };
