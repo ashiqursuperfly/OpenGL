@@ -54,6 +54,10 @@ public:
         VTM = Matrix::viewTransformation(eye, look, up);
         PM = Matrix::projection(near, far, fovY, aspectRatio);
 
+        std::cout<<"VTM:"<<VTM<<std::endl;
+
+        std::cout<<"PM:"<<PM<<std::endl;
+
         currentStack.push(Matrix::identity(4, 4));
     }
 
@@ -67,7 +71,7 @@ public:
                 processTriangle();
             } else if (command == "translate") {
                 processTranslate();
-            } else if (command == "scaling") {
+            } else if (command == "scale") {
                 processScale();
             } else if (command == "rotate") {
                 processRotate();
@@ -98,6 +102,10 @@ public:
             auto model = transformPoint(currentStack.top(), p);
             auto view = transformPoint(VTM, model);
             auto projection = transformPoint(PM, view);
+
+            std::cout<<"model:"<<model<<std::endl;
+            std::cout<<"view:"<<view<<std::endl;
+            std::cout<<"projection:"<<projection<<std::endl;
 
             osStage1 << model;
             osStage2 << view;

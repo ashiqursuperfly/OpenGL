@@ -8,5 +8,6 @@ CMakeFiles/Offline2.dir/main.cpp.o: ../headers/1605103_triangle.h
 CMakeFiles/Offline2.dir/main.cpp.o: ../headers/1605103_util.h
 CMakeFiles/Offline2.dir/main.cpp.o: ../headers/1605103_vector.h
 CMakeFiles/Offline2.dir/main.cpp.o: ../headers/1605103_zbuffer.h
+CMakeFiles/Offline2.dir/main.cpp.o: ../headers/bitmap_image.hpp
 CMakeFiles/Offline2.dir/main.cpp.o: ../main.cpp
 

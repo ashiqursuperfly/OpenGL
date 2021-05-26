@@ -55,6 +55,26 @@ iostream
 /home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_util.h
 1605103_triangle.h
 /home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_triangle.h
+bitmap_image.hpp
+/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/bitmap_image.hpp
+
+/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/bitmap_image.hpp
+algorithm
+-
+cmath
+-
+cstdlib
+-
+fstream
+-
+iostream
+-
+iterator
+-
+limits
+-
+string
+-
 
 /home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/main.cpp
 headers/1605103_input_handler.h

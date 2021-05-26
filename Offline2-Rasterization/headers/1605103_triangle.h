@@ -22,6 +22,30 @@ public:
         this->color = Color((int)getRandomFloat(0, 255), (int)getRandomFloat(0, 255), (int)getRandomFloat(0, 255));
     }
 
+    double getMaxX() const {
+        double max = std::max(p1.x, p2.x);
+
+        return std::max(max, p3.x);
+    }
+
+    double getMinX() const {
+        double min = std::min(p1.x, p2.x);
+
+        return std::min(min, p3.x);
+    }
+
+    double getMaxY() const {
+        double max = std::max(p1.y, p2.y);
+
+        return std::max(max, p3.y);
+    }
+
+    double getMinY() const {
+        double min = std::min(p1.y, p2.y);
+
+        return std::min(min, p3.y);
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Triangle &t) {
         os <<"Points:(\n"<< t.p1 << t.p2 << t.p3 << ")\nColor" << t.color << std::endl;
         return os;

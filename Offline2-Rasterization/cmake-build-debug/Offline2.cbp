@@ -103,6 +103,9 @@
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_zbuffer.h">
 			<Option target="Offline2"/>
 		</Unit>
+		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/bitmap_image.hpp">
+			<Option target="Offline2"/>
+		</Unit>
 		<Unit filename="/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/main.cpp">
 			<Option target="Offline2"/>
 		</Unit>
