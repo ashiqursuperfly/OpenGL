@@ -62,7 +62,7 @@ public:
         for (auto & r: zBuffer) {
             for (auto & data: r) {
                 if (data < zRear) {
-                    osZBuffer<<data<<'\t';
+                    osZBuffer<<data<<"    ";
                 }
             }
             osZBuffer<<'\n';

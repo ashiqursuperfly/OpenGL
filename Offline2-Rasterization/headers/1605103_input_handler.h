@@ -45,15 +45,10 @@ public:
         std::cout<<"Eye:"<<eye<<std::endl;
         std::cout<<"Look:"<<look<<std::endl;
         std::cout<<"Up:"<<up<<std::endl;
-
         std::cout<<"fovY: "<<fovY<<" aspectRatio: "<<aspectRatio<<" near: "<<near<<" far: "<<far<<std::endl;
 
         VTM = Matrix::viewTransformation(eye, look, up);
         PM = Matrix::projection(near, far, fovY, aspectRatio);
-
-        std::cout<<"VTM:"<<VTM<<std::endl;
-
-        std::cout<<"PM:"<<PM<<std::endl;
 
         currentStack.push(Matrix::identity(4, 4));
     }
@@ -142,7 +137,7 @@ public:
 
     static Vector transformPoint(const Vector point, const Matrix &T) {
 
-        auto res = (T * Matrix::column(point));
+        auto res = T * Matrix::column(point);
         return Vector(res.data[0][0], res.data[1][0], res.data[2][0]) / res.getW();
     }
 

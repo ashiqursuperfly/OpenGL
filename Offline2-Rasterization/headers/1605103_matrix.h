@@ -76,10 +76,15 @@ public:
 
         auto res = zero(4, 4);
 
-        std::vector<Vector> col = {col0, col1, col2};
+        std::vector<Vector> columns;
+        columns.push_back(col0);
+        columns.push_back(col1);
+        columns.push_back(col2);
 
-        for (int c = 0; c < 3; ++c) {
-            res.data[0][c] = col[c].x; res.data[1][c] = col[c].y; res.data[2][c] = col[c].z;
+        for (int col = 0; col < 3; col++) {
+            res.data[0][col] = columns[col].x;
+            res.data[1][col] = columns[col].y;
+            res.data[2][col] = columns[col].z;
         }
         res.setW(1);
         return res;
@@ -114,16 +119,6 @@ public:
         return res;
     }
 
-    friend std::ostream &operator<<(std::ostream &ostream, const Matrix &mat) {
-        for (const auto &r : mat.data) {
-            for (auto item : r) {
-                ostream << item << ", ";
-            }
-            ostream << std::endl;
-        }
-        return ostream;
-    }
-
     Matrix operator*(const Matrix &rhs) const {
         int r1 = (int)(*this).data.size();
         int r2 = (int)rhs.data.size();
@@ -133,16 +128,16 @@ public:
 
         if (c1 != r2) {
             std::cout << "Invalid Matrix Multiplication: " << r1 << "x" << r2 << c1 << "x" << c2 << std::endl;
-            return zero(r1, c2);
+            return zero(r1, c1);
         }
 
         auto result = zero(r1, c2);
 
-        for (auto i = 0; i < r1; i++) {
-            for (auto j = 0; j < c2; j++) {
-                for (auto k = 0; k < c1; k++) {
+        for (int i = 0; i < r1; i++) {
+            for (int j = 0; j < c2; j++) {
+                for (int k = 0; k < c1; k++) {
                     auto d = (*this).data[i][k] * rhs.data[k][j];
-                    result.data[i][j] += d;
+                    result.data[i][j] = result.data[i][j] + d;
                 }
             }
         }
