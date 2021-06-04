@@ -60,19 +60,13 @@ public:
 
     static Matrix translation(double dx, double dy, double dz) {
         auto res = identity(4, 4);
-
-        res.data[0][3] = dx;
-        res.data[1][3] = dy;
-        res.data[2][3] = dz;
+        res.data[0][3] = dx; res.data[1][3] = dy; res.data[2][3] = dz;
         return res;
     }
 
     static Matrix scaling(double sx, double sy, double sz) {
         auto res = zero(4, 4);
-
-        res.data[0][0] = sx;
-        res.data[1][1] = sy;
-        res.data[2][2] = sz;
+        res.data[0][0] = sx; res.data[1][1] = sy; res.data[2][2] = sz;
         res.setW(1);
 
         return res;
@@ -85,11 +79,8 @@ public:
         std::vector<Vector> col = {col0, col1, col2};
 
         for (int c = 0; c < 3; ++c) {
-            res.data[0][c] = col[c].x;
-            res.data[1][c] = col[c].y;
-            res.data[2][c] = col[c].z;
+            res.data[0][c] = col[c].x; res.data[1][c] = col[c].y; res.data[2][c] = col[c].z;
         }
-
         res.setW(1);
         return res;
     }

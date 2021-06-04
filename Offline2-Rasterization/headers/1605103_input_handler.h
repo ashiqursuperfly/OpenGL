@@ -35,10 +35,7 @@ public:
         osStage1.open("outputs/stage1.txt");
         osStage2.open("outputs/stage2.txt");
         osStage3.open("outputs/stage3.txt");
-        osStage1 << std::setprecision(7) << std::fixed;
-        osStage2 << std::setprecision(7) << std::fixed;
-        osStage3 << std::setprecision(7) << std::fixed;
-
+        osStage1 << std::setprecision(7) << std::fixed; osStage2 << std::setprecision(7) << std::fixed; osStage3 << std::setprecision(7) << std::fixed;
 
         Vector eye, look, up;
         std::cin >> eye >> look >> up;
@@ -63,24 +60,24 @@ public:
 
     void processInput() {
 
-        std::string command;
+        std::string instruction;
         while (true) {
-            std::cin >> command;
+            std::cin >> instruction;
 
-            if (command == "triangle") {
+            if (instruction == "triangle") {
                 processTriangle();
-            } else if (command == "translate") {
+            } else if (instruction == "translate") {
                 processTranslate();
-            } else if (command == "scale") {
+            } else if (instruction == "scale") {
                 processScale();
-            } else if (command == "rotate") {
+            } else if (instruction == "rotate") {
                 processRotate();
-            } else if (command == "push") {
+            } else if (instruction == "push") {
                 history.push(currentStack);
-            } else if (command == "pop") {
+            } else if (instruction == "pop") {
                 currentStack = history.top();
                 history.pop();
-            } else if (command == "end") {
+            } else if (instruction == "end") {
                 std::cin.clear();
                 break;
             }
@@ -97,24 +94,16 @@ public:
         std::cin >> points[1];
         std::cin >> points[2];
 
-        for (const auto &p : points) {
+        for (int i=0; i < 3; i++) {
 
-            auto model = transformPoint(currentStack.top(), p);
-            auto view = transformPoint(VTM, model);
-            auto projection = transformPoint(PM, view);
+            auto model = transformPoint(points[i], currentStack.top());
+            auto view = transformPoint(model, VTM);
+            auto projection = transformPoint(view, PM);
 
-            std::cout<<"model:"<<model<<std::endl;
-            std::cout<<"view:"<<view<<std::endl;
-            std::cout<<"projection:"<<projection<<std::endl;
-
-            osStage1 << model;
-            osStage2 << view;
-            osStage3 << projection;
+            osStage1 << model; osStage2 << view; osStage3 << projection;
         }
 
-        osStage1 << std::endl;
-        osStage2 << std::endl;
-        osStage3 << std::endl;
+        osStage1 << std::endl; osStage2 << std::endl; osStage3 << std::endl;
     }
 
     void processTranslate() {
@@ -151,10 +140,10 @@ public:
         currentStack.push(currentStack.top() * r);
     }
 
-    static Vector transformPoint(const Matrix &M, const Vector point) {
+    static Vector transformPoint(const Vector point, const Matrix &T) {
 
-        auto result = (M * Matrix::column(point));
-        return Vector(result.data[0][0], result.data[1][0], result.data[2][0]) / result.getW();
+        auto res = (T * Matrix::column(point));
+        return Vector(res.data[0][0], res.data[1][0], res.data[2][0]) / res.getW();
     }
 
     static Vector rodrigues(const Vector& x, const Vector& a, const double angle) {
