@@ -9,6 +9,7 @@
 
 #include<cmath>
 #include <iostream>
+#include <fstream>
 #include <GL/glut.h>
 #include "1605103_vector.h"
 

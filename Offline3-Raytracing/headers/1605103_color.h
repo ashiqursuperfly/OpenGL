@@ -9,13 +9,13 @@
 
 class Color {
 public:
-    int r,g,b;
+    double r,g,b;
 
     Color() {
         r = g = b = 0;
     }
 
-    Color(int red, int green, int blue){
+    Color(double red, double green, double blue){
         r = red;
         g = green;
         b = blue;
@@ -25,4 +25,10 @@ public:
         os <<"("<< t.r << ", " << t.g << ", " << t.b << ")" << std::endl;
         return os;
     }
+
+    friend std::istream &operator>>(std::istream &is, Color &v) {
+        is >> v.r >> v.g >> v.b;
+        return is;
+    }
+
 };

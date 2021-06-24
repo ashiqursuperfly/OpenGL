@@ -13,18 +13,18 @@
 class Floor {
 public:
     int tileWidth;
-    int length;
+    int width;
 
-    Floor(int width, int len) {
-        tileWidth = width;
-        length = len;
+    Floor(int tw, int w) {
+        tileWidth = tw;
+        width = w;
     }
 
-    void draw() {
+    void draw() const {
         glPushMatrix();
         double color = 0;
-        int leftLim = -5 * length;
-        int rightLimit = 5 * length;
+        int leftLim = -5 * width;
+        int rightLimit = 5 * width;
         for (int i = leftLim; i < rightLimit; i += tileWidth) {
             for (int j = leftLim; j < rightLimit; j += tileWidth) {
                 color = 1 - color;
@@ -52,7 +52,7 @@ public:
 };
 
 class Object {
-    std::vector<double> coEfficients; // reflection coefficients
+    std::vector<double> coEfficients;
     int shine;
 public:
     Vector reference_point;
@@ -107,15 +107,19 @@ public:
         this->shine = shine;
     }
 
-    virtual void draw() {}
+    virtual void draw() const{}
 
 };
 
 class Sphere : Object {
+public:
     double radius;
 
-    Sphere(Vector center, double radius, double ambient, double diffuse, double specular, double reflection,
-           int shine) {
+    Sphere() {
+        radius = 0;
+    }
+
+    Sphere(Vector center, double radius, double ambient, double diffuse, double specular, double reflection,int shine) {
         reference_point = center;
         this->radius = radius;
 
@@ -126,7 +130,7 @@ class Sphere : Object {
         setShine(shine);
     }
 
-    void drawSphere() {
+    void draw() const override {
         glPushMatrix();
         glTranslatef(reference_point.x, reference_point.y, reference_point.z);
         glColor3f(color.r, color.g, color.b);
@@ -163,5 +167,46 @@ class Sphere : Object {
             }
         }
         glPopMatrix();
+    }
+    friend std::istream &operator>>(std::istream &is, Sphere &v) {
+        is >> v.reference_point;
+        is >> v.radius;
+        is >> v.color;
+
+        double c1, c2, c3, c4;
+        int c5;
+
+        is >> c1;
+        v.setAmbient(c1);
+
+        is >> c2;
+        v.setDiffuse(c2);
+
+        is >> c3;
+        v.setSpecular(c3);
+
+        is >> c4;
+        v.setReflection(c4);
+
+        is >> c5;
+        v.setShine(c5);
+
+        return is;
+    }
+
+};
+
+class Scene {
+public:
+    int numObjects;
+    int recursionLevels;
+    int pixels;
+
+    std::vector<Sphere> spheres;
+
+    void draw() const {
+        for (const auto & sphere : spheres) {
+            sphere.draw();
+        }
     }
 };

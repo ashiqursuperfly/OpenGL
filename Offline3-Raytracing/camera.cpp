@@ -14,6 +14,7 @@
 
 Camera camera;
 Floor floorB(TILE_WIDTH, FAR_PLANE);
+Scene scene;
 
 
 void display() {
@@ -33,6 +34,7 @@ void display() {
     drawAxes(9999);
 
     floorB.draw();
+    scene.draw();
 
     glColor3f(1.0, 1.0, 1.0);
 
@@ -124,6 +126,30 @@ void specialKeyListener(int key, int x, int y) {
 }
 
 void loadData() {
+
+    FILE *fp = freopen("scene.txt", "r", stdin);
+
+    if (fp == nullptr) {
+        std::cout << "Error: Input File Not Found" << std::endl;
+        return;
+    }
+
+    std:: cin>>scene.recursionLevels;
+    std::cin>>scene.pixels;
+    std::cin>>scene.numObjects;
+
+    for (int i = 0; i < scene.numObjects; ++i) {
+        std::string type;
+        std::cin>>type;
+        if (type == "sphere") {
+            // std::cout<<"Sphere"<<std::endl;
+            Sphere s;
+            std::cin>>s;
+            scene.spheres.push_back(s);
+        }
+    }
+
+
 
 }
 
