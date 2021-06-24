@@ -1,9 +1,20 @@
 //
 // Created by ashiq on 3/14/21.
 //
-#include "headers/1605103_util.h"
+
+#include "headers/1605103_opengl_util.h"
+#include "headers/1605103_camera.h"
+#include "headers/1605103_objects.h"
+
+#define FOVY 80
+#define ASPECT_RATIO 1
+#define NEAR_PLANE 1
+#define FAR_PLANE 1000
+#define TILE_WIDTH 20
 
 Camera camera;
+Floor floorB(TILE_WIDTH, FAR_PLANE);
+
 
 void display() {
 
@@ -20,6 +31,8 @@ void display() {
     glMatrixMode(GL_MODELVIEW);
 
     drawAxes(9999);
+
+    floorB.draw();
 
     glColor3f(1.0, 1.0, 1.0);
 
@@ -110,26 +123,16 @@ void specialKeyListener(int key, int x, int y) {
 
 }
 
+void loadData() {
+
+}
+
 void init() {
-
-    //clear the screen
     clearDisplay();
-
-    /************************
-    / set-up projection here
-    ************************/
-    //load the PROJECTION matrix
+    loadData();
     glMatrixMode(GL_PROJECTION);
-
-    //initialize the matrix
     glLoadIdentity();
-
-    //give PERSPECTIVE parameters
-    gluPerspective(80, 1, 1, 1000.0);
-    //field of view in the Y (vertically)
-    //aspect ratio that determines the field of view in the X direction (horizontally)
-    //near distance
-    //far distance
+    gluPerspective(FOVY, ASPECT_RATIO, NEAR_PLANE, FAR_PLANE);
 }
 
 
@@ -140,11 +143,11 @@ int main(int argc, char **argv) {
     glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);    //Depth, Double buffer, RGB color
 
-    glutCreateWindow("My OpenGL Program");
+    glutCreateWindow("Ray Tracing Demo");
 
     init();
 
-    glEnable(GL_DEPTH_TEST);    //enable Depth Testing
+    glEnable(GL_DEPTH_TEST);
 
     glutDisplayFunc(display);
     glutIdleFunc(animate);
@@ -152,7 +155,7 @@ int main(int argc, char **argv) {
     registerSpecialKeysListener(specialKeyListener);
     registerKeyboardListener(keyboardListener);
 
-    glutMainLoop();        //The main loop of OpenGL
+    glutMainLoop();
 
     return 0;
 }
