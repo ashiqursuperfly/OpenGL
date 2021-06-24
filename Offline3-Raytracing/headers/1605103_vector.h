@@ -7,8 +7,11 @@
 
 #endif //OFFLINE1_VECTOR_H
 
+#include <fstream>
+#include <cmath>
 #include <iostream>
 
+#define rad(t) ((t) * pi / 180.0)
 #define pi (2*acos(0.0))
 
 class Vector {
@@ -23,7 +26,7 @@ public:
 
     Vector(double x, double y, double z) : x(x), y(y), z(z) {}
 
-    Vector operator+ (Vector const &rhs) const {
+    Vector operator+(const Vector &rhs) const {
 
         Vector res;
 
@@ -34,7 +37,7 @@ public:
         return res;
     }
 
-    Vector operator- (Vector const &rhs) const {
+    Vector operator-(const Vector &rhs) const {
 
         Vector res;
 
@@ -45,7 +48,7 @@ public:
         return res;
     }
 
-    Vector operator- () const {
+    Vector operator-() const {
 
         Vector res;
 
@@ -56,7 +59,20 @@ public:
         return res;
     }
 
-    Vector operator* (Vector const & rhs) const {
+    Vector operator/(double scalar) const {
+
+        Vector res;
+
+        if (scalar != 0) {
+            res.x = x / scalar;
+            res.y = y / scalar;
+            res.z = z / scalar;
+        }
+
+        return res;
+    }
+
+    Vector operator*(const Vector &rhs) const {
 
         Vector res;
 
@@ -68,20 +84,18 @@ public:
 
     }
 
-    Vector operator* (double scalar) const {
+    Vector operator*(double scalar) const {
 
         Vector res;
 
-        if (scalar != 0) {
-            res.x = x * scalar;
-            res.y = y * scalar;
-            res.z = z * scalar;
-        }
+        res.x = x * scalar;
+        res.y = y * scalar;
+        res.z = z * scalar;
 
         return res;
     }
 
-    double getDistance(Vector const & rhs) const {
+    double getDistance(const Vector &rhs) const {
 
         double dX = x - rhs.x;
         double dY = y - rhs.y;
@@ -91,7 +105,7 @@ public:
 
     }
 
-    double dot(Vector const & rhs) const {
+    double dot(const Vector &rhs) const {
         return x * rhs.x + y * rhs.y + z * rhs.z;
     }
 
@@ -99,7 +113,7 @@ public:
 
         Vector res;
 
-        float val = sqrt(x * x + y * y + z * z);
+        auto val = sqrt(x * x + y * y + z * z);
 
         res.x = x / val;
         res.y = y / val;
@@ -108,8 +122,8 @@ public:
         return res;
     }
 
-    Vector rotate(Vector const & axis, double angleDegrees) const {
-        //qr this vector with respect to an axis
+    Vector rotate(const Vector &axis, double angleDegrees) const {
+        //rotate this vector with respect to an axis
         Vector crossProduct = axis * (*this);
 
         // r1 = lxCost , lyCost
@@ -122,7 +136,30 @@ public:
         return r1 + r2;
     }
 
+    friend std::istream &operator>>(std::istream &is, Vector &v) {
+        is >> v.x >> v.y >> v.z;
+        return is;
+    }
+
+
+    friend std::ostream &operator<<(std::ostream &os, const Vector &v) {
+        os << v.x << " " << v.y << " " << v.z << std::endl;
+        return os;
+    }
+
     void print() const {
-        std::cout<<"( "<<x<<","<<y<<","<<z<<" )"<<std::endl;
+        std::cout << "( " << x << "," << y << "," << z << " )" << std::endl;
+    }
+
+    static Vector I() {
+        return {1, 0, 0};
+    }
+
+    static Vector J() {
+        return {0, 1, 0};
+    }
+
+    static Vector K() {
+        return {0, 0, 1};
     }
 };
