@@ -12,6 +12,10 @@ public:
 
     Vector pos;
     Vector u, r, l;
+    int fovy;
+    int aspectRatio;
+    int nearPlane;
+    int farPlane;
 
     Camera() {
 
@@ -29,6 +33,12 @@ public:
         r.z = 0;
 
         u = l * r;
+
+        fovy = 80;
+        aspectRatio = 1;
+        nearPlane = 1;
+        farPlane = 1000;
+
 
         print();
     }

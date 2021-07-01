@@ -55,6 +55,7 @@ class Object {
     std::vector<double> coEfficients;
     int shine;
 public:
+    std::string name;
     Vector reference_point;
     Color color;
 
@@ -65,6 +66,7 @@ public:
         coEfficients.push_back(0);
         coEfficients.push_back(0);
         coEfficients.push_back(0);
+        name = "";
     }
 
     double getAmbient() {
@@ -107,30 +109,35 @@ public:
         this->shine = shine;
     }
 
-    virtual void draw() const{}
+    virtual void draw() const = 0;
+
+    virtual Vector getNormal(Vector intersectionPoint) const = 0;
 
 };
 
-class Sphere : Object {
+class Sphere : public Object {
 public:
     double radius;
 
     Sphere() {
         radius = 0;
+        name = "sphere";
     }
 
-    Sphere(Vector center, double radius, double ambient, double diffuse, double specular, double reflection,int shine) {
+    Sphere(Vector center, Color color, double radius, double ambient, double diffuse, double specular, double reflection, int shine) {
         reference_point = center;
         this->radius = radius;
+        this->color = color;
 
         setAmbient(ambient);
         setDiffuse(diffuse);
         setSpecular(specular);
         setReflection(reflection);
         setShine(shine);
+        name = "sphere";
     }
 
-    void draw() const override {
+    void draw() const override{
         glPushMatrix();
         glTranslatef(reference_point.x, reference_point.y, reference_point.z);
         glColor3f(color.r, color.g, color.b);
@@ -194,6 +201,19 @@ public:
         return is;
     }
 
+    friend std::ostream &operator<<(std::ostream &os, const Sphere &v) {
+        os <<"Sphere P:"<<v.reference_point;
+        os <<"Sphere C:"<<v.color<<std::endl;
+        return os;
+    }
+
+    Vector getNormal(Vector intersectionPoint) const override{
+        Vector ret;
+        ret = intersectionPoint - reference_point;
+        ret.normalize();
+        return ret;
+    }
+
 };
 
 class Light {
@@ -203,7 +223,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Light &v) {
         os <<"Light P:"<<v.position;
-        os <<" Light C:"<<v.color<<std::endl;
+        os <<"Light C:"<<v.color<<std::endl;
         return os;
     }
 
@@ -212,6 +232,7 @@ public:
         is >> v.color;
         return is;
     }
+
     void draw() const{
         glColor3f(color.r, color.g, color.b);
         glPushMatrix();
@@ -231,12 +252,14 @@ public:
     int recursionLevels;
     int pixels;
 
-    std::vector<Sphere> spheres;
+    std::vector<Object *> objects;
     std::vector<Light> lights;
 
     void draw() const {
-        for (const auto & sphere : spheres) {
-            sphere.draw();
+        for (int i=0; i < numObjects; i++) {
+            if (objects[i] -> name == "sphere") {
+                objects[i]->draw();
+            }
         }
         for (const Light & light : lights) {
             light.draw();

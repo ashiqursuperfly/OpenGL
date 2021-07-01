@@ -105,6 +105,10 @@ public:
 
     }
 
+    double absoluteValue() const{
+        return sqrt(x * x + y * y + z * z);
+    }
+
     double dot(const Vector &rhs) const {
         return x * rhs.x + y * rhs.y + z * rhs.z;
     }

@@ -1386,7 +1386,7 @@ private:
       if (bfh.type != 19778)
       {
          stream.close();
-         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - Invalid type value " << bfh.type << " expected 19778." << std::endl;
+         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - Invalid name value " << bfh.type << " expected 19778." << std::endl;
          return;
       }
 

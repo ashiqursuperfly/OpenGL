@@ -3,19 +3,14 @@
 //
 
 #include "headers/1605103_opengl_util.h"
-#include "headers/1605103_camera.h"
-#include "headers/1605103_objects.h"
+#include "headers/1605103_ray_tracing.h"
 
-#define FOVY 80
-#define ASPECT_RATIO 1
-#define NEAR_PLANE 1
-#define FAR_PLANE 1000
 #define TILE_WIDTH 20
 
 Camera camera;
-Floor floorB(TILE_WIDTH, FAR_PLANE);
+Floor floorB(TILE_WIDTH, camera.farPlane);
 Scene scene;
-
+RayTracingCapturer rayTracingCapturer(scene);
 
 void display() {
 
@@ -35,8 +30,6 @@ void display() {
 
     floorB.draw();
     scene.draw();
-
-    glColor3f(1.0, 1.0, 1.0);
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
     glutSwapBuffers();
@@ -79,6 +72,10 @@ void keyboardListener(unsigned char key, int x, int y) {
             camera.r = camera.r.rotate(camera.l, 3.0);
             camera.u = camera.r * camera.l;
             camera.print();
+        case '0':
+            rayTracingCapturer.capture(500, 500, scene.pixels, scene.pixels, camera);
+            std::cout << "Image Captured. Capture No. " << std::endl;
+            break;
         default:
             break;
     }
@@ -141,11 +138,14 @@ void loadData() {
     for (int i = 0; i < scene.numObjects; ++i) {
         std::string type;
         std::cin>>type;
+        Object * obj;
         if (type == "sphere") {
             Sphere s;
             std::cin>>s;
-            scene.spheres.push_back(s);
+            obj = new Sphere(s.reference_point, s.color, s.radius, s.getAmbient(), s.getDiffuse(), s.getSpecular(), s.getReflection(), s.getShine());
+            scene.objects.push_back(obj);
         }
+
     }
 
     std::cin>>scene.numLightSources;
@@ -155,8 +155,6 @@ void loadData() {
         scene.lights.push_back(l);
     }
 
-
-
 }
 
 void init() {
@@ -164,7 +162,7 @@ void init() {
     loadData();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(FOVY, ASPECT_RATIO, NEAR_PLANE, FAR_PLANE);
+    gluPerspective(camera.fovy, camera.aspectRatio, camera.nearPlane, camera.farPlane);
 }
 
 
@@ -175,7 +173,7 @@ int main(int argc, char **argv) {
     glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);    //Depth, Double buffer, RGB color
 
-    glutCreateWindow("Ray Tracing Demo");
+    glutCreateWindow("Ray Tracing");
 
     init();
 
