@@ -142,11 +142,17 @@ void loadData() {
         std::string type;
         std::cin>>type;
         if (type == "sphere") {
-            // std::cout<<"Sphere"<<std::endl;
             Sphere s;
             std::cin>>s;
             scene.spheres.push_back(s);
         }
+    }
+
+    std::cin>>scene.numLightSources;
+    for (int i = 0; i < scene.numLightSources; i++) {
+        Light l;
+        std::cin>>l;
+        scene.lights.push_back(l);
     }
 
 

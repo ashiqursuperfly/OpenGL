@@ -196,17 +196,50 @@ public:
 
 };
 
+class Light {
+public:
+    Vector position;
+    Color color;
+
+    friend std::ostream &operator<<(std::ostream &os, const Light &v) {
+        os <<"Light P:"<<v.position;
+        os <<" Light C:"<<v.color<<std::endl;
+        return os;
+    }
+
+    friend std::istream &operator>>(std::istream &is, Light &v) {
+        is >> v.position;
+        is >> v.color;
+        return is;
+    }
+    void draw() const{
+        glColor3f(color.r, color.g, color.b);
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            glutSolidSphere(0.5, 7, 7);
+        }
+        glPopMatrix();
+    }
+
+};
+
 class Scene {
 public:
     int numObjects;
+    int numLightSources;
     int recursionLevels;
     int pixels;
 
     std::vector<Sphere> spheres;
+    std::vector<Light> lights;
 
     void draw() const {
         for (const auto & sphere : spheres) {
             sphere.draw();
+        }
+        for (const Light & light : lights) {
+            light.draw();
         }
     }
 };
