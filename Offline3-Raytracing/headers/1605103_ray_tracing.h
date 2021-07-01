@@ -239,7 +239,12 @@ public:
         bitmap_image image(static_cast<const unsigned int>(imageWidth), static_cast<const unsigned int>(imageHeight));
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
-                image.set_pixel(j, i, (char)frame[i][j].r * 255, (char)frame[i][j].g * 255, (char)frame[i][j].b * 255);
+                if (frame[i][j].r <= 0 && frame[i][j].g <= 0 && frame[i][j].b <= 0) {
+                    image.set_pixel(j, i, 255, 255, 255);
+                }
+                else {
+                    image.set_pixel(j, i, frame[i][j].r * 255, frame[i][j].g * 255, frame[i][j].b * 255);
+                }
             }
         }
         image.save_image("1605103.bmp");
