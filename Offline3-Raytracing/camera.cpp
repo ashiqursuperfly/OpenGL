@@ -134,7 +134,7 @@ void loadData() {
         return;
     }
 
-    std:: cin>>scene.recursionLevels;
+    std::cin>>scene.recursionLevels;
     std::cin>>scene.pixels;
     std::cin>>scene.numObjects;
 
