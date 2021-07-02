@@ -818,8 +818,7 @@ Colour getPixelColour(const Ray &mainRay) {
         }
     }
     if (closestObstacleIndex != NEG_INF) {
-        Ray finalRayAfterAllLevelReflections = objectList[closestObstacleIndex]->intersectAndIlluminate(mainRay,
-                                                                                                        reflectionLevel);
+        Ray finalRayAfterAllLevelReflections = objectList[closestObstacleIndex]->intersectAndIlluminate(mainRay, reflectionLevel);
         resultColour = finalRayAfterAllLevelReflections.colour;
     }
     return resultColour;

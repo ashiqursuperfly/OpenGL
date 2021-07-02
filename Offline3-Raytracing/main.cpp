@@ -8,7 +8,6 @@
 #define TILE_WIDTH 20
 
 Camera camera;
-Floor floorB(TILE_WIDTH, camera.farPlane);
 Scene scene;
 RayTracingCapturer rayTracingCapturer(scene);
 
@@ -28,7 +27,6 @@ void display() {
 
     drawAxes(9999);
 
-    floorB.draw();
     scene.draw();
 
     //ADD this line in the end --- if you use double buffer (i.e. GL_DOUBLE)
@@ -154,7 +152,16 @@ void loadData() {
         std::cin>>l;
         scene.lights.push_back(l);
     }
+    scene.numObjects += 1;
+    Object * floor = new Floor(TILE_WIDTH, camera.farPlane);
 
+    floor->setAmbient(0.3);
+    floor->setDiffuse(0.2);
+    floor->setSpecular(0.1);
+    floor->setReflection(0.4);
+    floor->setShine(1);
+
+    scene.objects.push_back(floor);
 }
 
 void init() {

@@ -47,7 +47,7 @@ public:
         ret.t_value = getIntersectionParameterT(ray, object);
         intersectionPoint = ray.startVector + ray.directionUnitVector * ret.t_value;
 
-        ret.color = object->color * object->getAmbient(); // todo: object->color might not do it for floor
+        ret.color = object->getColor(intersectionPoint) * object->getAmbient(); // todo: object->color might not do it for floor
 
         if (ret.t_value < 0) return ret;
         if (recursionLevel < 1) return ret;
@@ -59,7 +59,7 @@ public:
     }
 
     Color Illuminate(Ray mainRay, Vector IntersectionPoint, double ParameterT, int reflectionLevel, Object * object) const{
-        Color resultColor = object->color * object->getAmbient(); // todo: object->color might not do it for floor
+        Color resultColor = object->getColor(IntersectionPoint) * object->getAmbient(); // todo: object->color might not do it for floor
 
         Vector normalAtIntersectionPoint = object->getNormal(IntersectionPoint);
 
@@ -91,7 +91,7 @@ public:
                 double lambert = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection; // R = 2(L.N)N-L;
                 double Phong = std::max(mainRay.directionUnitVector.dot(R), 0.0);
-                resultColor = resultColor + object->color * (lightFactor * lambert * object->getDiffuse()); // todo: object->color might not do it for floor
+                resultColor = resultColor + object->getColor(IntersectionPoint) * (lightFactor * lambert * object->getDiffuse()); // todo: object->color might not do it for floor
 
                 resultColor = resultColor + Light.color * (lightFactor * pow(Phong, object->getShine()) * object->getSpecular());
             }
@@ -169,6 +169,10 @@ public:
 
             return t;
         }
+        else if (object->name == "floor") {
+            return -(ray.startVector.z / ray.directionUnitVector.z);
+        }
+        return 0.0;
     }
 
 };

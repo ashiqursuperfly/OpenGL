@@ -10,47 +10,6 @@
 #include <vector>
 #include "1605103_color.h"
 
-class Floor {
-public:
-    int tileWidth;
-    int width;
-
-    Floor(int tw, int w) {
-        tileWidth = tw;
-        width = w;
-    }
-
-    void draw() const {
-        glPushMatrix();
-        double color = 0;
-        int leftLim = -5 * width;
-        int rightLimit = 5 * width;
-        for (int i = leftLim; i < rightLimit; i += tileWidth) {
-            for (int j = leftLim; j < rightLimit; j += tileWidth) {
-                color = 1 - color;
-                glColor3f(color, color, color);
-
-                glBegin(GL_QUADS);
-                {
-                    glVertex2f(i, j);
-
-                    glVertex2f(i + tileWidth, j);
-
-                    glVertex2f(i + tileWidth, j + tileWidth);
-
-                    glVertex2f(i, j + tileWidth);
-
-                }
-                glEnd();
-            }
-            color = 1 - color;
-        }
-        glPopMatrix();
-    }
-
-
-};
-
 class Object {
     std::vector<double> coEfficients;
     int shine;
@@ -112,6 +71,74 @@ public:
     virtual void draw() const = 0;
 
     virtual Vector getNormal(Vector intersectionPoint) const = 0;
+
+    virtual Color getColor(Vector IntersectingPoint) const = 0;
+};
+
+class Floor : public Object {
+public:
+    int tileWidth;
+    int width;
+
+    Floor(int tw, int w) {
+        name = "floor";
+        tileWidth = tw;
+        width = w;
+    }
+
+    void draw() const override {
+
+        double color = 0;
+        int leftLim = -5 * width;
+        int rightLimit = 5 * width;
+        glPushMatrix();
+        for (int i = leftLim; i < rightLimit; i += tileWidth) {
+            for (int j = leftLim; j < rightLimit; j += tileWidth) {
+                color = 1 - color;
+                glColor3f(color, color, color);
+
+                glBegin(GL_QUADS);
+                {
+                    glVertex2f(i, j);
+
+                    glVertex2f(i + tileWidth, j);
+
+                    glVertex2f(i + tileWidth, j + tileWidth);
+
+                    glVertex2f(i, j + tileWidth);
+
+                }
+                glEnd();
+            }
+            color = 1 - color;
+        }
+        glPopMatrix();
+    }
+
+    Vector getNormal(Vector intersectionPoint) const override {
+        return {0, 0, 1};
+    }
+
+    Color getColor(Vector IntersectingPoint) const override {
+        auto dx = static_cast<int>((static_cast<double>(IntersectingPoint.x + width / 2.0)) / tileWidth);
+        auto dy = static_cast<int>((static_cast<double>(IntersectingPoint.y + width / 2.0)) / tileWidth);
+
+        int remI = dx % 2;
+        int remJ = dy % 2;
+
+        if (remI < 0) {
+            remI *= -1;
+        }
+        if (remJ < 0) {
+            remJ *= -1;
+        }
+
+        if ((remI == 0 && remJ == 0) || (remI == 1 && remJ == 1)) {
+            return {1, 1, 1};
+        } else {
+            return {0, 0, 0};
+        }
+    }
 
 };
 
@@ -208,11 +235,15 @@ public:
         return os;
     }
 
-    Vector getNormal(Vector intersectionPoint) const override{
+    Vector getNormal(Vector intersectionPoint) const override {
         Vector ret;
         ret = intersectionPoint - reference_point;
         ret = ret.normalize();
         return ret;
+    }
+
+    Color getColor(Vector IntersectingPoint) const override {
+        return color;
     }
 
 };
