@@ -7,6 +7,7 @@
 
 #endif //OFFLINE3_1605103_RAY_TRACING_H
 
+
 #include "1605103_camera.h"
 #include "1605103_objects.h"
 #include "bitmap_image.hpp"
@@ -92,7 +93,7 @@ public:
                 double Phong = std::max(mainRay.directionUnitVector.dot(R), 0.0);
                 resultColor = resultColor + object->color * (lightFactor * lambert * object->getDiffuse()); // todo: object->color might not do it for floor
 
-                resultColor = resultColor + Color(255, 255, 255) * (lightFactor * pow(Phong, object->getShine()) * object->getSpecular());
+                resultColor = resultColor + Light.color * (lightFactor * pow(Phong, object->getShine()) * object->getSpecular());
             }
         }
         if (reflectionLevel > 0) {
@@ -216,7 +217,7 @@ public:
     }
 
 
-    Color getPixelColor(const Ray &mainRay) const{
+    Color getPixelColor(const Ray &mainRay) const {
         Color resultColor(0, 0, 0);
         int closestObstacleIndex = INT32_MIN;
         double minimumValueOfParameterT = INT32_MAX;
@@ -239,7 +240,18 @@ public:
         bitmap_image image(static_cast<const unsigned int>(imageWidth), static_cast<const unsigned int>(imageHeight));
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
-                image.set_pixel(j, i, frame[i][j].r * 255, frame[i][j].g * 255, frame[i][j].b * 255);
+                int r = frame[i][j].r * 255;
+                int g = frame[i][j].g * 255;
+                int b = frame[i][j].b * 255;
+                if(r < 0) r = 0;
+                if(r > 255) r = 255;
+
+                if(g < 0) g = 0;
+                if(g > 255) g = 255;
+
+                if(b < 0) b = 0;
+                if(b > 255) b = 255;
+                image.set_pixel(i, j, r, g, b);
             }
         }
         image.save_image("1605103.bmp");

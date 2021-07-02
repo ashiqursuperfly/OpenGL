@@ -161,15 +161,15 @@ public:
             for (j = 0; j < slices; j++) {
                 glBegin(GL_QUADS);
                 {
-                    glVertex3f(points[i][j].x, points[i][j].y, points[i][j].z);
-                    glVertex3f(points[i][j + 1].x, points[i][j + 1].y, points[i][j + 1].z);
-                    glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, points[i + 1][j + 1].z);
-                    glVertex3f(points[i + 1][j].x, points[i + 1][j].y, points[i + 1][j].z);
+                    glVertex3f((GLfloat)points[i][j].x, (GLfloat)points[i][j].y, (GLfloat)points[i][j].z);
+                    glVertex3f((GLfloat)points[i][j + 1].x, (GLfloat)points[i][j + 1].y, (GLfloat)points[i][j + 1].z);
+                    glVertex3f((GLfloat)points[i + 1][j + 1].x, (GLfloat)points[i + 1][j + 1].y, (GLfloat)points[i + 1][j + 1].z);
+                    glVertex3f((GLfloat)points[i + 1][j].x, (GLfloat)points[i + 1][j].y, (GLfloat)points[i + 1][j].z);
 
-                    glVertex3f(points[i][j].x, points[i][j].y, -points[i][j].z);
-                    glVertex3f(points[i][j + 1].x, points[i][j + 1].y, -points[i][j + 1].z);
-                    glVertex3f(points[i + 1][j + 1].x, points[i + 1][j + 1].y, -points[i + 1][j + 1].z);
-                    glVertex3f(points[i + 1][j].x, points[i + 1][j].y, -points[i + 1][j].z);
+                    glVertex3f((GLfloat)points[i][j].x, (GLfloat)points[i][j].y, (GLfloat)-points[i][j].z);
+                    glVertex3f((GLfloat)points[i][j + 1].x, (GLfloat)points[i][j + 1].y, (GLfloat)-points[i][j + 1].z);
+                    glVertex3f((GLfloat)points[i + 1][j + 1].x, (GLfloat)points[i + 1][j + 1].y, (GLfloat)-points[i + 1][j + 1].z);
+                    glVertex3f((GLfloat)points[i + 1][j].x, (GLfloat)points[i + 1][j].y, (GLfloat)-points[i + 1][j].z);
                 }
                 glEnd();
             }
