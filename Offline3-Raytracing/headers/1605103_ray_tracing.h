@@ -46,7 +46,7 @@ public:
         ret.t_value = getIntersectionParameterT(ray, object);
         intersectionPoint = ray.startVector + ray.directionUnitVector * ret.t_value;
 
-        ret.color = object->color * object->getAmbient();
+        ret.color = object->color * object->getAmbient(); // todo: object->color might not do it for floor
 
         if (ret.t_value < 0) return ret;
         if (recursionLevel < 1) return ret;
@@ -58,7 +58,7 @@ public:
     }
 
     Color Illuminate(Ray mainRay, Vector IntersectionPoint, double ParameterT, int reflectionLevel, Object * object) const{
-        Color resultColor = object->color * object->getAmbient();
+        Color resultColor = object->color * object->getAmbient(); // todo: object->color might not do it for floor
 
         Vector normalAtIntersectionPoint = object->getNormal(IntersectionPoint);
 
@@ -70,7 +70,7 @@ public:
         for (auto &Light : scene.lights) {
             Vector lightRayDirection = Light.position - IntersectionPoint;
             double lightToThisObjectDistance = lightRayDirection.absoluteValue();
-            lightRayDirection.normalize();
+            lightRayDirection = lightRayDirection.normalize();
 
             Vector lightRayStart = IntersectionPoint + lightRayDirection * 1;
             Ray lightRayTowardsThisObject(lightRayStart, lightRayDirection);
@@ -90,9 +90,9 @@ public:
                 double lambert = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection; // R = 2(L.N)N-L;
                 double Phong = std::max(mainRay.directionUnitVector.dot(R), 0.0);
-                resultColor = resultColor + object->color * lightFactor * lambert * object->getDiffuse();
+                resultColor = resultColor + object->color * (lightFactor * lambert * object->getDiffuse()); // todo: object->color might not do it for floor
 
-                resultColor = resultColor + Color(255, 255, 255) * lightFactor * pow(Phong, object->getShine()) * object->getSpecular();
+                resultColor = resultColor + Color(255, 255, 255) * (lightFactor * pow(Phong, object->getShine()) * object->getSpecular());
             }
         }
         if (reflectionLevel > 0) {
@@ -115,7 +115,7 @@ public:
     int getMinimumObstacleIdx(const Ray &reflectedRay, int minimumObstacleIndex) const {
 
         minimumObstacleIndex = INT32_MIN;
-        double minimumValueOfParameterT = INT16_MAX;
+        double minimumValueOfParameterT = INT32_MAX;
 
         for (int i = 0; i < scene.numObjects; i++) {
             Object * obj = scene.objects[i];
@@ -132,7 +132,7 @@ public:
 
     static Vector getReflectedVectorDirection(Vector mainRay, Vector Normal) {
         Vector reflectionRay = mainRay - Normal * (2.0 * mainRay.dot(Normal));
-        reflectionRay.normalize();
+        reflectionRay = reflectionRay.normalize();
         return reflectionRay;
     }
 
@@ -174,14 +174,15 @@ public:
 
 
 class RayTracingCapturer {
+    RayTracing rayTracing;
 public:
     Scene & scene;
 
-    RayTracingCapturer(Scene &sc) : scene(sc) {}
+    RayTracingCapturer(Scene &sc) : scene(sc), rayTracing(sc) {}
 
     void capture(double windowWidth, double windowHeight, double imageWidth, double imageHeight, const Camera & camera) const {
         std::vector<std::vector<Color>> imagePixels;
-        
+
         double planeDistanceFromCamera = (windowHeight / 2.0) / tan(camera.fovy / 2.0 * (pi / 180.0));
 
         Vector dx, dy, dz;
@@ -202,7 +203,7 @@ public:
                 currLeftCorner = topLeftCornerOfWholeFrame + camera.r * (j * changeThroughRow) - camera.u * (i * changeThroughColumn);
 
                 eyeToPixelDirection = currLeftCorner - camera.pos;
-                eyeToPixelDirection.normalize();
+                eyeToPixelDirection = eyeToPixelDirection.normalize();
                 eyeToPixelRayStart = camera.pos;
 
                 Ray eyeToPixelRay(eyeToPixelRayStart, eyeToPixelDirection);
@@ -219,7 +220,6 @@ public:
         Color resultColor(0, 0, 0);
         int closestObstacleIndex = INT32_MIN;
         double minimumValueOfParameterT = INT32_MAX;
-        RayTracing rayTracing(scene);
 
         for (int i = 0; i < scene.numObjects; i++) {
             Ray intersectOrNot = rayTracing.intersectAndIlluminate(mainRay, 0, scene.objects[i]);
@@ -239,12 +239,7 @@ public:
         bitmap_image image(static_cast<const unsigned int>(imageWidth), static_cast<const unsigned int>(imageHeight));
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
-                if (frame[i][j].r <= 0 && frame[i][j].g <= 0 && frame[i][j].b <= 0) {
-                    image.set_pixel(j, i, 255, 255, 255);
-                }
-                else {
-                    image.set_pixel(j, i, frame[i][j].r * 255, frame[i][j].g * 255, frame[i][j].b * 255);
-                }
+                image.set_pixel(j, i, frame[i][j].r * 255, frame[i][j].g * 255, frame[i][j].b * 255);
             }
         }
         image.save_image("1605103.bmp");

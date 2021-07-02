@@ -34,7 +34,7 @@ public:
 
         u = l * r;
 
-        fovy = 80;
+        fovy = 90;
         aspectRatio = 1;
         nearPlane = 1;
         farPlane = 1000;

@@ -125,6 +125,7 @@ public:
     }
 
     Sphere(Vector center, Color color, double radius, double ambient, double diffuse, double specular, double reflection, int shine) {
+        name = "sphere";
         reference_point = center;
         this->radius = radius;
         this->color = color;
@@ -134,10 +135,10 @@ public:
         setSpecular(specular);
         setReflection(reflection);
         setShine(shine);
-        name = "sphere";
+
     }
 
-    void draw() const override{
+    void draw() const override {
         glPushMatrix();
         glTranslatef(reference_point.x, reference_point.y, reference_point.z);
         glColor3f(color.r, color.g, color.b);
@@ -210,7 +211,7 @@ public:
     Vector getNormal(Vector intersectionPoint) const override{
         Vector ret;
         ret = intersectionPoint - reference_point;
-        ret.normalize();
+        ret = ret.normalize();
         return ret;
     }
 
@@ -257,9 +258,7 @@ public:
 
     void draw() const {
         for (int i=0; i < numObjects; i++) {
-            if (objects[i] -> name == "sphere") {
-                objects[i]->draw();
-            }
+            objects[i]->draw();
         }
         for (const Light & light : lights) {
             light.draw();
