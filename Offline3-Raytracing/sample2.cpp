@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "headers/bitmap_image.hpp"
+#include "headers/bitmap_image.h"
 
 #ifdef __linux__
 

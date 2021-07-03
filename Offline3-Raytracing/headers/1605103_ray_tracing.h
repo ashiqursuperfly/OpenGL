@@ -12,7 +12,7 @@
 
 #include "1605103_camera.h"
 #include "1605103_objects.h"
-#include "bitmap_image.hpp"
+#include "bitmap_image.h"
 #include <vector>
 
 class Ray {
