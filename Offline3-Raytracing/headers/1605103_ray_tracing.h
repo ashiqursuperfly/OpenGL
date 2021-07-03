@@ -17,27 +17,18 @@
 
 class Ray {
 public:
-    Vector start;
-    Vector dir;
-    double t;
+    Vector start, dir;
     Color color;
-
+    double t;
 
     Ray() {
-        t = -1;
+        t = -MIN_OBSTACLE_DIST;
     }
 
     Ray(const Vector &startVector, const Vector &direction) {
         start = startVector;
         dir = direction;
-        t = -1;
-    }
-
-    bool isIntersect(double minValOfParamT) const {
-        if (t > 0 && t < minValOfParamT) {
-            return true;
-        }
-        return false;
+        t = -MIN_OBSTACLE_DIST;
     }
 };
 
@@ -48,23 +39,22 @@ public:
 
     RayTracing(Scene &sc) : scene(sc) {}
 
+    //todo:
     Ray intersect(Ray ray, int recursionLevel, Object * object) const{
-        Ray ret;
-        Color finalColor;
-        Vector intersectionPoint;
+        Ray result;
 
-        ret.t = getIntersectionParameterT(ray, object);
-        intersectionPoint = ray.start + ray.dir * ret.t;
+        result.t = getIntersectionParameterT(object, ray);
 
-        ret.color = object->getColor(intersectionPoint) * object->getAmbient();
+        Vector intersectionPoint = ray.start + ray.dir * result.t;
+        result.color = object->getColor(intersectionPoint) * object->getAmbient();
 
-        if (ret.t < 0) return ret;
-        if (recursionLevel < 1) return ret;
+        if (result.t < 0) return result;
+        if (recursionLevel < 1) return result;
 
-        finalColor = phongLighting(ray, intersectionPoint, recursionLevel, object);
-        ret.color = finalColor;
+        Color finalColor = phongLighting(ray, intersectionPoint, recursionLevel, object);
+        result.color = finalColor;
 
-        return ret;
+        return result;
     }
 
     //TODO:
@@ -132,7 +122,7 @@ public:
 
             Ray intersectRay = intersect(ray, 0, obj);
 
-            if (intersectRay.isIntersect(minParamT)) {
+            if (isIntersect(intersectRay, minParamT)) {
                 closestObstacleObjectID = objectID;
                 minParamT = intersectRay.t;
             }
@@ -140,8 +130,14 @@ public:
         return closestObstacleObjectID;
     }
 
-    // TODO:
-    static double getIntersectionParameterT(Ray & ray, Object * object) {
+    static bool isIntersect(Ray & ray, double minValOfParamT){
+        if (ray.t > 0 && ray.t < minValOfParamT) {
+            return true;
+        }
+        return false;
+    }
+
+    static double getIntersectionParameterT(Object * object, Ray & ray) {
         if (object->name == "floor") {
             return -(ray.start.z / ray.dir.z);
         }
@@ -221,7 +217,7 @@ public:
 
         for (int objectID = 0; objectID < scene.numObjects; objectID++) {
             Ray intersectRay = rayTracing.intersect(mainRay, 0, scene.objects[objectID]);
-            if (intersectRay.isIntersect(minParamT)) {
+            if (RayTracing::isIntersect(intersectRay, minParamT)) {
                 closestObstacleID = objectID;
                 minParamT = intersectRay.t;
             }
