@@ -195,19 +195,17 @@ public:
             for (int j = 0; j < imageWidth; j++) {
                 Vector currentTopLeft = frameTopLeft + camera.r * (j * du) - camera.u * (i * dv);
 
-                Vector eyeToPixelDirection = currentTopLeft - camera.pos;
-                eyeToPixelDirection = eyeToPixelDirection.normalize();
-                Vector eyeToPixelRayStart = camera.pos;
-                Ray eyeToPixelRay(eyeToPixelRayStart, eyeToPixelDirection);
+                Vector cameraToPixelDir = (currentTopLeft - camera.pos).normalize();
+                Ray cameraToPixelRay(camera.pos, cameraToPixelDir);
 
-                imagePixels[i].push_back(getPixelColor(eyeToPixelRay));
+                imagePixels[i].push_back(getPixelColor(cameraToPixelRay));
             }
         }
 
         populatePixelsWithColor(filename, imageWidth, imageHeight, imagePixels);
     }
 
-
+    // TODO:
     Color getPixelColor(const Ray &mainRay) const {
         Color resultColor(0, 0, 0);
         int closestObstacleIndex = INT32_MIN;
@@ -228,7 +226,7 @@ public:
     }
 
     static void populatePixelsWithColor(const std::string & filename, double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
-        bitmap_image image(static_cast<const unsigned int>(imageWidth), static_cast<const unsigned int>(imageHeight));
+        bitmap_image image((unsigned int)imageWidth, (unsigned int)imageHeight);
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
 
