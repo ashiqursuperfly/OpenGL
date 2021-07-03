@@ -32,14 +32,13 @@ public:
     }
 };
 
-class RayTracing {
+class RayTracingExecutor {
 public:
 
     Scene & scene;
 
-    RayTracing(Scene &sc) : scene(sc) {}
+    RayTracingExecutor(Scene &sc) : scene(sc) {}
 
-    //todo:
     Ray intersect(Ray ray, int recursionLevel, Object * object) const{
         Ray result;
 
@@ -51,25 +50,25 @@ public:
         if (result.t < 0) return result;
         if (recursionLevel < 1) return result;
 
-        Color finalColor = phongLighting(ray, intersectionPoint, recursionLevel, object);
+        Color finalColor = phongLighting(object, ray, intersectionPoint, recursionLevel);
         result.color = finalColor;
 
         return result;
     }
 
     //TODO:
-    Color phongLighting(Ray mainRay, Vector intersectionPoint, int reflectionLevel, Object *object) const {
+    Color phongLighting(Object *object, Ray ray, Vector intersectionPoint, int reflectionLevel) const {
         Color resultColor = object->getColor(intersectionPoint) * object->getAmbient();
 
         Vector normalAtIntersectionPoint = object->getNormal(intersectionPoint);
 
-        double dotValue = normalAtIntersectionPoint.dot(mainRay.dir);
+        double dotValue = normalAtIntersectionPoint.dot(ray.dir);
         if (dotValue > 0) {
-            normalAtIntersectionPoint = normalAtIntersectionPoint * (-1.0);
+            normalAtIntersectionPoint = normalAtIntersectionPoint * (-1);
         }
 
-        for (auto &Light : scene.lights) {
-            Vector lightRayDirection = Light.position - intersectionPoint;
+        for (auto &light : scene.lights) {
+            Vector lightRayDirection = light.position - intersectionPoint;
             double lightToThisObjectDistance = lightRayDirection.absoluteValue();
             lightRayDirection = lightRayDirection.normalize();
 
@@ -89,15 +88,17 @@ public:
             if (!interceptedByAnotherObjectBefore) {
                 double lightFactor = 1;
                 double lambertValue = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
-                Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection; // R = 2(L.N)N-L;
-                double phongValue = std::max(mainRay.dir.dot(R), 0.0);
-                resultColor = resultColor + object->getColor(intersectionPoint) * (lightFactor * lambertValue * object->getDiffuse());
+                Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection;
+                double phongValue = std::max(ray.dir.dot(R), 0.0);
 
-                resultColor = resultColor + Light.color * (lightFactor * pow(phongValue, object->getShine()) * object->getSpecular());
+                Color diffuseComponent = object->getColor(intersectionPoint) * (lightFactor * lambertValue * object->getDiffuse());
+                Color specularComponent = light.color * (lightFactor * pow(phongValue, object->getShine()) * object->getSpecular());
+
+                resultColor = resultColor + diffuseComponent + specularComponent;
             }
         }
         if (reflectionLevel > 0) {
-            Vector reflectionRayDirection = mainRay.dir.reflection(normalAtIntersectionPoint);
+            Vector reflectionRayDirection = ray.dir.reflection(normalAtIntersectionPoint);
 
             Vector reflectedRayStart = intersectionPoint + reflectionRayDirection;
             Ray reflectedRay(reflectedRayStart, reflectionRayDirection);
@@ -106,7 +107,8 @@ public:
 
             if (closestObstacleIdx != MIN_OBSTACLE_DIST) {
                 Ray nextLevel = intersect(reflectedRay, reflectionLevel - 1, scene.objects[closestObstacleIdx]);
-                resultColor = resultColor + nextLevel.color * 1.0 * object->getReflection();
+                Color reflectionComponent = nextLevel.color * object->getReflection();
+                resultColor = resultColor + reflectionComponent;
             }
         }
         return resultColor;
@@ -129,6 +131,26 @@ public:
         }
         return closestObstacleObjectID;
     }
+
+    Color execute(const Ray &ray) const{
+        int closestObstacleID = MIN_OBSTACLE_DIST;
+        double minParamT = MAX_OBSTACLE_DIST;
+
+        for (int objectID = 0; objectID < scene.numObjects; objectID++) {
+            Ray intersectRay = intersect(ray, 0, scene.objects[objectID]);
+            if (RayTracingExecutor::isIntersect(intersectRay, minParamT)) {
+                closestObstacleID = objectID;
+                minParamT = intersectRay.t;
+            }
+        }
+        if (closestObstacleID != MIN_OBSTACLE_DIST) {
+            Ray intersectRayRecursive = intersect(ray, scene.recursionLevels, scene.objects[closestObstacleID]);
+            return intersectRayRecursive.color;
+        }
+        return {0, 0, 0};
+    }
+
+    /** utils **/
 
     static bool isIntersect(Ray & ray, double minValOfParamT){
         if (ray.t > 0 && ray.t < minValOfParamT) {
@@ -177,13 +199,12 @@ public:
 
 };
 
-
 class RayTracingCapturer {
-    RayTracing rayTracing;
+    RayTracingExecutor rtExecutor;
 public:
     Scene & scene;
 
-    RayTracingCapturer(Scene &sc) : scene(sc), rayTracing(sc) {}
+    RayTracingCapturer(Scene &sc) : scene(sc), rtExecutor(sc) {}
 
     void capture(const std::string & filename, double windowWidth, double windowHeight, double imageWidth, double imageHeight, const Camera & camera) const {
         std::vector<std::vector<Color>> imagePixels;
@@ -204,29 +225,11 @@ public:
                 Vector cameraToPixelDir = (currentTopLeft - camera.pos).normalize();
                 Ray cameraToPixelRay(camera.pos, cameraToPixelDir);
 
-                imagePixels[i].push_back(getPixelColor(cameraToPixelRay));
+                imagePixels[i].push_back(rtExecutor.execute(cameraToPixelRay));
             }
         }
 
         generateBitmap(filename, imageWidth, imageHeight, imagePixels);
-    }
-
-    Color getPixelColor(const Ray &mainRay) const {
-        int closestObstacleID = MIN_OBSTACLE_DIST;
-        double minParamT = MAX_OBSTACLE_DIST;
-
-        for (int objectID = 0; objectID < scene.numObjects; objectID++) {
-            Ray intersectRay = rayTracing.intersect(mainRay, 0, scene.objects[objectID]);
-            if (RayTracing::isIntersect(intersectRay, minParamT)) {
-                closestObstacleID = objectID;
-                minParamT = intersectRay.t;
-            }
-        }
-        if (closestObstacleID != MIN_OBSTACLE_DIST) {
-            Ray intersectRayRecursive = rayTracing.intersect(mainRay, scene.recursionLevels, scene.objects[closestObstacleID]);
-            return intersectRayRecursive.color;
-        }
-        return {0, 0, 0};
     }
 
     static void generateBitmap(const std::string & filename, double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
