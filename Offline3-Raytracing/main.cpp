@@ -42,34 +42,35 @@ void keyboardListener(unsigned char key, int x, int y) {
     switch (key) {
 
         case '1':
-            camera.l = camera.l.rotate(camera.u, 3.0);
+            camera.l = camera.l.rotate(camera.u, 1.5);
             camera.r = camera.l * camera.u;
             camera.print();
             break;
         case '2':
-            camera.l = camera.l.rotate(camera.u, -3.0);
+            camera.l = camera.l.rotate(camera.u, -1.5);
             camera.r = camera.l * camera.u;
             camera.print();
             break;
         case '3':
-            camera.l = camera.l.rotate(camera.r, 3.0);
+            camera.l = camera.l.rotate(camera.r, 1.5);
             camera.u = camera.r * camera.l;
             camera.print();
             break;
         case '4':
-            camera.l = camera.l.rotate(camera.r, -3.0);
+            camera.l = camera.l.rotate(camera.r, -1.5);
             camera.u = camera.r * camera.l;
             camera.print();
             break;
         case '5':
-            camera.r = camera.r.rotate(camera.l, -3.0);
+            camera.r = camera.r.rotate(camera.l, -1.5);
             camera.u = camera.r * camera.l;
             camera.print();
             break;
         case '6':
-            camera.r = camera.r.rotate(camera.l, 3.0);
+            camera.r = camera.r.rotate(camera.l, 1.5);
             camera.u = camera.r * camera.l;
             camera.print();
+            break;
         case '0':
             rayTracingCapturer.capture(500, 500, scene.pixels, scene.pixels, camera);
             std::cout << "Image Captured. Capture No. " << std::endl;
@@ -152,15 +153,15 @@ void loadData() {
         std::cin>>l;
         scene.lights.push_back(l);
     }
-    scene.numObjects += 1;
     Object * floor = new Floor(TILE_WIDTH, camera.farPlane);
 
-    floor->setAmbient(0.3);
-    floor->setDiffuse(0.2);
-    floor->setSpecular(0.1);
-    floor->setReflection(0.4);
+    floor->setAmbient(0.35);
+    floor->setDiffuse(0.25);
+    floor->setSpecular(0.15);
+    floor->setReflection(0.35);
     floor->setShine(1);
 
+    scene.numObjects += 1;
     scene.objects.push_back(floor);
 }
 

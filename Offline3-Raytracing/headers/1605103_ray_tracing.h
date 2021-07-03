@@ -15,20 +15,20 @@
 
 class Ray {
 public:
-    Vector startVector;
-    Vector directionUnitVector;
-    double t_value;
+    Vector start;
+    Vector dir;
+    double t;
     Color color;
 
 
     Ray() {
-        t_value = -1;
+        t = -1;
     }
 
-    Ray(const Vector &start, const Vector &direction) {
-        startVector = start;
-        directionUnitVector = direction;
-        t_value = -1;
+    Ray(const Vector &startVector, const Vector &direction) {
+        start = startVector;
+        dir = direction;
+        t = -1;
     }
 };
 
@@ -39,48 +39,48 @@ public:
 
     RayTracing(Scene &sc) : scene(sc) {}
 
-    Ray intersectAndIlluminate(Ray ray, int recursionLevel, Object * object) const{
+    Ray intersect(Ray ray, int recursionLevel, Object * object) const{
         Ray ret;
         Color finalColor;
         Vector intersectionPoint;
 
-        ret.t_value = getIntersectionParameterT(ray, object);
-        intersectionPoint = ray.startVector + ray.directionUnitVector * ret.t_value;
+        ret.t = getIntersectionParameterT(ray, object);
+        intersectionPoint = ray.start + ray.dir * ret.t;
 
-        ret.color = object->getColor(intersectionPoint) * object->getAmbient(); // todo: object->color might not do it for floor
+        ret.color = object->getColor(intersectionPoint) * object->getAmbient();
 
-        if (ret.t_value < 0) return ret;
+        if (ret.t < 0) return ret;
         if (recursionLevel < 1) return ret;
 
-        finalColor = Illuminate(ray, intersectionPoint, ret.t_value, recursionLevel, object);
+        finalColor = phongLighting(ray, intersectionPoint, recursionLevel, object);
         ret.color = finalColor;
 
         return ret;
     }
 
-    Color Illuminate(Ray mainRay, Vector IntersectionPoint, double ParameterT, int reflectionLevel, Object * object) const{
-        Color resultColor = object->getColor(IntersectionPoint) * object->getAmbient(); // todo: object->color might not do it for floor
+    Color phongLighting(Ray mainRay, Vector intersectionPoint, int reflectionLevel, Object *object) const {
+        Color resultColor = object->getColor(intersectionPoint) * object->getAmbient();
 
-        Vector normalAtIntersectionPoint = object->getNormal(IntersectionPoint);
+        Vector normalAtIntersectionPoint = object->getNormal(intersectionPoint);
 
-        double dotValue = normalAtIntersectionPoint.dot(mainRay.directionUnitVector);
+        double dotValue = normalAtIntersectionPoint.dot(mainRay.dir);
         if (dotValue > 0) {
             normalAtIntersectionPoint = normalAtIntersectionPoint * (-1.0);
         }
 
         for (auto &Light : scene.lights) {
-            Vector lightRayDirection = Light.position - IntersectionPoint;
+            Vector lightRayDirection = Light.position - intersectionPoint;
             double lightToThisObjectDistance = lightRayDirection.absoluteValue();
             lightRayDirection = lightRayDirection.normalize();
 
-            Vector lightRayStart = IntersectionPoint + lightRayDirection * 1;
+            Vector lightRayStart = intersectionPoint + lightRayDirection * 1;
             Ray lightRayTowardsThisObject(lightRayStart, lightRayDirection);
 
             bool interceptedByAnotherObjectBefore = false;
 
             for (int i=0; i < scene.numObjects; i++) {
-                Ray interceptionResult = intersectAndIlluminate(lightRayTowardsThisObject, 0, scene.objects[i]);
-                if (interceptionResult.t_value > 0 && interceptionResult.t_value < lightToThisObjectDistance) {
+                Ray interceptionResult = intersect(lightRayTowardsThisObject, 0, scene.objects[i]);
+                if (interceptionResult.t > 0 && interceptionResult.t < lightToThisObjectDistance) {
                     interceptedByAnotherObjectBefore = true;
                     break;
                 }
@@ -88,25 +88,25 @@ public:
 
             if (!interceptedByAnotherObjectBefore) {
                 double lightFactor = 1;
-                double lambert = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
+                double lambertValue = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection; // R = 2(L.N)N-L;
-                double Phong = std::max(mainRay.directionUnitVector.dot(R), 0.0);
-                resultColor = resultColor + object->getColor(IntersectionPoint) * (lightFactor * lambert * object->getDiffuse()); // todo: object->color might not do it for floor
+                double phongValue = std::max(mainRay.dir.dot(R), 0.0);
+                resultColor = resultColor + object->getColor(intersectionPoint) * (lightFactor * lambertValue * object->getDiffuse());
 
-                resultColor = resultColor + Light.color * (lightFactor * pow(Phong, object->getShine()) * object->getSpecular());
+                resultColor = resultColor + Light.color * (lightFactor * pow(phongValue, object->getShine()) * object->getSpecular());
             }
         }
         if (reflectionLevel > 0) {
-            Vector reflectionRayDirection = getReflectedVectorDirection(mainRay.directionUnitVector, normalAtIntersectionPoint);
+            Vector reflectionRayDirection = mainRay.dir.reflection(normalAtIntersectionPoint);
 
-            Vector reflectedRayStart = IntersectionPoint + reflectionRayDirection * 1;
+            Vector reflectedRayStart = intersectionPoint + reflectionRayDirection * 1;
             Ray reflectedRay(reflectedRayStart, reflectionRayDirection);
 
             int minimumObstacleIndex = INT32_MIN;
             minimumObstacleIndex = getMinimumObstacleIdx(reflectedRay, minimumObstacleIndex);
 
             if (minimumObstacleIndex != INT32_MIN) {
-                Ray nextLevel = intersectAndIlluminate(reflectedRay, reflectionLevel - 1, scene.objects[minimumObstacleIndex]);
+                Ray nextLevel = intersect(reflectedRay, reflectionLevel - 1, scene.objects[minimumObstacleIndex]);
                 resultColor = resultColor + nextLevel.color * 1.0 * object->getReflection();
             }
         }
@@ -121,20 +121,14 @@ public:
         for (int i = 0; i < scene.numObjects; i++) {
             Object * obj = scene.objects[i];
 
-            Ray intersectOrNot = intersectAndIlluminate(reflectedRay, 0, obj);
+            Ray intersectOrNot = intersect(reflectedRay, 0, obj);
 
-            if (intersectOrNot.t_value > 0 && intersectOrNot.t_value < minimumValueOfParameterT) {
+            if (intersectOrNot.t > 0 && intersectOrNot.t < minimumValueOfParameterT) {
                 minimumObstacleIndex = i;
-                minimumValueOfParameterT = intersectOrNot.t_value;
+                minimumValueOfParameterT = intersectOrNot.t;
             }
         }
         return minimumObstacleIndex;
-    }
-
-    static Vector getReflectedVectorDirection(Vector mainRay, Vector Normal) {
-        Vector reflectionRay = mainRay - Normal * (2.0 * mainRay.dot(Normal));
-        reflectionRay = reflectionRay.normalize();
-        return reflectionRay;
     }
 
     static double getIntersectionParameterT(Ray & ray, Object * object) {
@@ -144,8 +138,8 @@ public:
             Vector R0, Rd;
 
             r = s->radius;
-            R0 = ray.startVector - s->reference_point;
-            Rd = ray.directionUnitVector;
+            R0 = ray.start - s->reference_point;
+            Rd = ray.dir;
 
             a = Rd.dot(Rd);
             b = 2.0 * Rd.dot(R0);
@@ -170,7 +164,7 @@ public:
             return t;
         }
         else if (object->name == "floor") {
-            return -(ray.startVector.z / ray.directionUnitVector.z);
+            return -(ray.start.z / ray.dir.z);
         }
         return 0.0;
     }
@@ -227,14 +221,15 @@ public:
         double minimumValueOfParameterT = INT32_MAX;
 
         for (int i = 0; i < scene.numObjects; i++) {
-            Ray intersectOrNot = rayTracing.intersectAndIlluminate(mainRay, 0, scene.objects[i]);
-            if (intersectOrNot.t_value > 0 && intersectOrNot.t_value < minimumValueOfParameterT) {
+            Ray intersectOrNot = rayTracing.intersect(mainRay, 0, scene.objects[i]);
+            if (intersectOrNot.t > 0 && intersectOrNot.t < minimumValueOfParameterT) {
                 closestObstacleIndex = i;
-                minimumValueOfParameterT = intersectOrNot.t_value;
+                minimumValueOfParameterT = intersectOrNot.t;
             }
         }
         if (closestObstacleIndex != INT32_MIN) {
-            Ray finalRayAfterAllLevelReflections = rayTracing.intersectAndIlluminate(mainRay, scene.recursionLevels, scene.objects[closestObstacleIndex]);
+            Ray finalRayAfterAllLevelReflections = rayTracing.intersect(mainRay, scene.recursionLevels,
+                                                                        scene.objects[closestObstacleIndex]);
             resultColor = finalRayAfterAllLevelReflections.color;
         }
         return resultColor;

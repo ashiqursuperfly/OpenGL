@@ -127,17 +127,18 @@ public:
     }
 
     Vector rotate(const Vector &axis, double angleDegrees) const {
-        //rotate this vector with respect to an axis
         Vector crossProduct = axis * (*this);
-
-        // r1 = lxCost , lyCost
-        // r2 = rxSint , rySint
-        // res = (lxCost + rxSint) , (lyCost + rySint)
 
         Vector r1 = (*this) * cos(angleDegrees * pi / 180);
         Vector r2 = crossProduct * sin(angleDegrees * pi / 180.0);
 
         return r1 + r2;
+    }
+
+    Vector reflection(Vector normal) {
+        Vector reflected = *this - normal * (2.0 * this->dot(normal));
+        reflected = reflected.normalize();
+        return reflected;
     }
 
     friend std::istream &operator>>(std::istream &is, Vector &v) {

@@ -170,10 +170,10 @@ public:
         glTranslatef(reference_point.x, reference_point.y, reference_point.z);
         glColor3f(color.r, color.g, color.b);
 
-        struct Vector points[100][100];
+        struct Vector points[200][200];
         int i, j;
         double h, r;
-        int slices = 80, stacks = 80;
+        int slices = 100, stacks = 100;
         for (i = 0; i <= stacks; i++) {
             h = radius * sin(((double) i / (double) stacks) * (pi / 2));
             r = radius * cos(((double) i / (double) stacks) * (pi / 2));
