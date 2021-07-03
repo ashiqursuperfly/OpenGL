@@ -56,7 +56,6 @@ public:
         return result;
     }
 
-    //TODO:
     Color phongLighting(Object *object, Ray ray, Vector intersectionPoint, int reflectionLevel) const {
         Color resultColor = object->getColor(intersectionPoint) * object->getAmbient();
 
@@ -69,30 +68,30 @@ public:
 
         for (auto &light : scene.lights) {
             Vector lightRayDirection = light.position - intersectionPoint;
-            double lightToThisObjectDistance = lightRayDirection.absoluteValue();
+            double lightToObjectDistance = lightRayDirection.abs();
             lightRayDirection = lightRayDirection.normalize();
 
             Vector lightRayStart = intersectionPoint + lightRayDirection;
-            Ray lightRayTowardsThisObject(lightRayStart, lightRayDirection);
+            Ray lightRayToObject(lightRayStart, lightRayDirection);
 
-            bool interceptedByAnotherObjectBefore = false;
+            bool isOccluded = false;
 
             for (int i=0; i < scene.numObjects; i++) {
-                Ray interceptionResult = intersect(lightRayTowardsThisObject, 0, scene.objects[i]);
-                if (interceptionResult.t > 0 && interceptionResult.t < lightToThisObjectDistance) {
-                    interceptedByAnotherObjectBefore = true;
+                Ray interceptResult = intersect(lightRayToObject, 0, scene.objects[i]);
+                if (isIntersect(interceptResult, lightToObjectDistance)) {
+                    isOccluded = true;
                     break;
                 }
             }
 
-            if (!interceptedByAnotherObjectBefore) {
-                double lightFactor = 1;
+            if (!isOccluded) {
+                double lightIntensity = 1;
                 double lambertValue = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection;
                 double phongValue = std::max(ray.dir.dot(R), 0.0);
 
-                Color diffuseComponent = object->getColor(intersectionPoint) * (lightFactor * lambertValue * object->getDiffuse());
-                Color specularComponent = light.color * (lightFactor * pow(phongValue, object->getShine()) * object->getSpecular());
+                Color diffuseComponent = object->getColor(intersectionPoint) * (lightIntensity * lambertValue * object->getDiffuse());
+                Color specularComponent = light.color * (lightIntensity * pow(phongValue, object->getShine()) * object->getSpecular());
 
                 resultColor = resultColor + diffuseComponent + specularComponent;
             }
@@ -165,25 +164,24 @@ public:
         }
         else if (object->name == "sphere") {
             auto s = dynamic_cast<Sphere *>(object);
-            double a, b, c, d, tem, t, t1, t2, r;
-            Vector R0, Rd;
+            double t, t1, t2, r;
 
             r = s->radius;
-            R0 = ray.start - s->reference_point;
-            Rd = ray.dir;
+            Vector R0 = ray.start - s->reference_point;
+            Vector Rd = ray.dir;
 
-            a = Rd.dot(Rd);
-            b = 2.0 * Rd.dot(R0);
-            c = R0.dot(R0) - r * r;
+            double a = Rd.dot(Rd);
+            double b = 2.0 * Rd.dot(R0);
+            double c = R0.dot(R0) - r * r;
 
-            tem = b * b - 4.0 * a * c;
+            double dVal = b * b - 4.0 * a * c;
 
-            if (tem < 0) {
+            if (dVal < 0) {
                 t = -1.0;
             } else {
-                d = sqrt(tem);
-                t1 = (-b + d) / (2.0 * a);
-                t2 = (-b - d) / (2.0 * a);
+                double determinant = sqrt(dVal);
+                t1 = (-b - determinant) / (2.0 * a);
+                t2 = (-b + determinant) / (2.0 * a);
 
                 if (t1 >= 0 && t2 >= 0) {
                     t = std::min(t1, t2);

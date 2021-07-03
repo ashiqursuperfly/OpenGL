@@ -105,7 +105,7 @@ public:
 
     }
 
-    double absoluteValue() const{
+    double abs() const{
         return sqrt(x * x + y * y + z * z);
     }
 
@@ -135,7 +135,7 @@ public:
         return r1 + r2;
     }
 
-    Vector reflection(Vector normal) {
+    Vector reflection(Vector normal) const{
         Vector reflected = *this - normal * (2.0 * this->dot(normal));
         reflected = reflected.normalize();
         return reflected;

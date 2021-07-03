@@ -119,9 +119,9 @@ public:
         return {0, 0, 1};
     }
 
-    Color getColor(Vector IntersectingPoint) const override {
-        auto dx = static_cast<int>((static_cast<double>(IntersectingPoint.x + width / 2.0)) / tileWidth);
-        auto dy = static_cast<int>((static_cast<double>(IntersectingPoint.y + width / 2.0)) / tileWidth);
+    Color getColor(Vector intersectPoint) const override {
+        auto dx = static_cast<int>((static_cast<double>(intersectPoint.x + width / 2.0)) / tileWidth);
+        auto dy = static_cast<int>((static_cast<double>(intersectPoint.y + width / 2.0)) / tileWidth);
 
         int remI = dx % 2;
         int remJ = dy % 2;
