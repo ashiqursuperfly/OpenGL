@@ -72,7 +72,7 @@ public:
             double lightToThisObjectDistance = lightRayDirection.absoluteValue();
             lightRayDirection = lightRayDirection.normalize();
 
-            Vector lightRayStart = intersectionPoint + lightRayDirection * 1;
+            Vector lightRayStart = intersectionPoint + lightRayDirection;
             Ray lightRayTowardsThisObject(lightRayStart, lightRayDirection);
 
             bool interceptedByAnotherObjectBefore = false;
@@ -213,8 +213,8 @@ public:
 
         Vector frameTopLeft = camera.pos + (camera.l * planeDistance) - (camera.r * (windowWidth / 2.0)) + (camera.u * (windowHeight / 2.0));
 
-        double du = (windowWidth * 1.0) / imageWidth;
-        double dv = (windowHeight * 1.0) / imageHeight;
+        double du = windowWidth / imageWidth;
+        double dv = windowHeight / imageHeight;
 
         for (int i = 0; i < imageHeight; i++) {
             imagePixels.emplace_back();
