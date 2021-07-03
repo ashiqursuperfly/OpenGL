@@ -179,39 +179,32 @@ public:
 
     RayTracingCapturer(Scene &sc) : scene(sc), rayTracing(sc) {}
 
-    void capture(double windowWidth, double windowHeight, double imageWidth, double imageHeight, const Camera & camera) const {
+    void capture(const std::string & filename, double windowWidth, double windowHeight, double imageWidth, double imageHeight, const Camera & camera) const {
         std::vector<std::vector<Color>> imagePixels;
 
-        double planeDistanceFromCamera = (windowHeight / 2.0) / tan(camera.fovy / 2.0 * (pi / 180.0));
+        double planeDistance = (windowHeight / 2.0) / tan(camera.fovy / 2.0 * (pi / 180.0));
 
-        Vector dx, dy, dz;
-        dy = camera.l * planeDistanceFromCamera;
-        dx = camera.r * (windowWidth / 2.0);
-        dz = camera.u * (windowHeight / 2.0);
+        Vector frameTopLeft = camera.pos + (camera.l * planeDistance) - (camera.r * (windowWidth / 2.0)) + (camera.u * (windowHeight / 2.0));
 
-        Vector topLeftCornerOfWholeFrame = camera.pos + dy - dx + dz;
+        double du = (windowWidth * 1.0) / imageWidth;
+        double dv = (windowHeight * 1.0) / imageHeight;
 
-        double changeThroughRow = (windowWidth * 1.0) / imageWidth;
-        double changeThroughColumn = (windowHeight * 1.0) / imageHeight;
-
-        Vector currLeftCorner, eyeToPixelDirection, eyeToPixelRayStart;
         for (int i = 0; i < imageHeight; i++) {
             imagePixels.emplace_back();
 
             for (int j = 0; j < imageWidth; j++) {
-                currLeftCorner = topLeftCornerOfWholeFrame + camera.r * (j * changeThroughRow) - camera.u * (i * changeThroughColumn);
+                Vector currentTopLeft = frameTopLeft + camera.r * (j * du) - camera.u * (i * dv);
 
-                eyeToPixelDirection = currLeftCorner - camera.pos;
+                Vector eyeToPixelDirection = currentTopLeft - camera.pos;
                 eyeToPixelDirection = eyeToPixelDirection.normalize();
-                eyeToPixelRayStart = camera.pos;
-
+                Vector eyeToPixelRayStart = camera.pos;
                 Ray eyeToPixelRay(eyeToPixelRayStart, eyeToPixelDirection);
 
                 imagePixels[i].push_back(getPixelColor(eyeToPixelRay));
             }
         }
 
-        populatePixelsWithColor(imageWidth, imageHeight, imagePixels);
+        populatePixelsWithColor(filename, imageWidth, imageHeight, imagePixels);
     }
 
 
@@ -228,31 +221,24 @@ public:
             }
         }
         if (closestObstacleIndex != INT32_MIN) {
-            Ray finalRayAfterAllLevelReflections = rayTracing.intersect(mainRay, scene.recursionLevels,
-                                                                        scene.objects[closestObstacleIndex]);
+            Ray finalRayAfterAllLevelReflections = rayTracing.intersect(mainRay, scene.recursionLevels,scene.objects[closestObstacleIndex]);
             resultColor = finalRayAfterAllLevelReflections.color;
         }
         return resultColor;
     }
 
-    static void populatePixelsWithColor(double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
+    static void populatePixelsWithColor(const std::string & filename, double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
         bitmap_image image(static_cast<const unsigned int>(imageWidth), static_cast<const unsigned int>(imageHeight));
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
-                int r = frame[i][j].r * 255;
-                int g = frame[i][j].g * 255;
-                int b = frame[i][j].b * 255;
-                if(r < 0) r = 0;
-                if(r > 255) r = 255;
 
-                if(g < 0) g = 0;
-                if(g > 255) g = 255;
+                double r = std::min(255.0, std::max(0.0, frame[i][j].r * 255));
+                double g = std::min(255.0, std::max(0.0, frame[i][j].g * 255));
+                double b = std::min(255.0, std::max(0.0, frame[i][j].b * 255));
 
-                if(b < 0) b = 0;
-                if(b > 255) b = 255;
-                image.set_pixel(i, j, r, g, b);
+                image.set_pixel(j, i, r, g, b);
             }
         }
-        image.save_image("1605103.bmp");
+        image.save_image(filename);
     }
 };

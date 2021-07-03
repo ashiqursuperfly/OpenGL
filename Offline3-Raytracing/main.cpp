@@ -10,6 +10,7 @@
 Camera camera;
 Scene scene;
 RayTracingCapturer rayTracingCapturer(scene);
+int numCaptures = 0;
 
 void display() {
 
@@ -72,8 +73,7 @@ void keyboardListener(unsigned char key, int x, int y) {
             camera.print();
             break;
         case '0':
-            rayTracingCapturer.capture(500, 500, scene.pixels, scene.pixels, camera);
-            std::cout << "Image Captured. Capture No. " << std::endl;
+            rayTracingCapturer.capture("1605103-" + std::to_string(numCaptures++) + ".bmp", 500, 500, scene.pixels, scene.pixels, camera);
             break;
         default:
             break;
