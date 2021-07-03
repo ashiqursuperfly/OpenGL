@@ -45,37 +45,38 @@ void keyboardListener(unsigned char key, int x, int y) {
         case '1':
             camera.l = camera.l.rotate(camera.u, 1.5);
             camera.r = camera.l * camera.u;
-            camera.print();
+            //camera.print();
             break;
         case '2':
             camera.l = camera.l.rotate(camera.u, -1.5);
             camera.r = camera.l * camera.u;
-            camera.print();
+            //camera.print();
             break;
         case '3':
             camera.l = camera.l.rotate(camera.r, 1.5);
             camera.u = camera.r * camera.l;
-            camera.print();
+            //camera.print();
             break;
         case '4':
             camera.l = camera.l.rotate(camera.r, -1.5);
             camera.u = camera.r * camera.l;
-            camera.print();
+            //camera.print();
             break;
         case '5':
             camera.r = camera.r.rotate(camera.l, -1.5);
             camera.u = camera.r * camera.l;
-            camera.print();
+            //camera.print();
             break;
         case '6':
             camera.r = camera.r.rotate(camera.l, 1.5);
             camera.u = camera.r * camera.l;
-            camera.print();
+            //camera.print();
             break;
         case '0':
-            rayTracingCapturer.capture("1605103-" + std::to_string(numCaptures++) + ".bmp", 500, 500, scene.pixels, scene.pixels, camera);
-            break;
-        default:
+            std::string f = "1605103-" + std::to_string(numCaptures++) + ".bmp";
+            std::cout<<"CAPTURING: "<<f<<"\n";
+            rayTracingCapturer.capture(f, 500, 500, scene.pixels, scene.pixels, camera);
+            std::cout<<"COMPLETE"<<std::endl;
             break;
     }
 }
@@ -86,32 +87,32 @@ void specialKeyListener(int key, int x, int y) {
 
         case GLUT_KEY_UP:
             camera.pos = camera.pos + camera.l;
-            camera.print();
+            //camera.print();
             break;
 
         case GLUT_KEY_DOWN:
             camera.pos = camera.pos - camera.l;
-            camera.print();
+            //camera.print();
             break;
 
         case GLUT_KEY_RIGHT:
             camera.pos = camera.pos + camera.r;
-            camera.print();
+            //camera.print();
             break;
 
         case GLUT_KEY_LEFT:
             camera.pos = camera.pos - camera.r;
-            camera.print();
+            //camera.print();
             break;
 
         case GLUT_KEY_PAGE_UP:
             camera.pos = camera.pos + camera.u;
-            camera.print();
+            //camera.print();
             break;
 
         case GLUT_KEY_PAGE_DOWN:
             camera.pos = camera.pos - camera.u;
-            camera.print();
+            //camera.print();
             break;
 
         default:

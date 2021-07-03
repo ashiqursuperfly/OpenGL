@@ -38,9 +38,6 @@ public:
         aspectRatio = 1;
         nearPlane = 1;
         farPlane = 1000;
-
-
-        print();
     }
 
     void print() const {
