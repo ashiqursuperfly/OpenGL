@@ -7,6 +7,8 @@
 
 #endif //OFFLINE3_1605103_RAY_TRACING_H
 
+#define MIN_OBSTACLE_DIST (-50)
+#define MAX_OBSTACLE_DIST INT32_MAX
 
 #include "1605103_camera.h"
 #include "1605103_objects.h"
@@ -29,6 +31,13 @@ public:
         start = startVector;
         dir = direction;
         t = -1;
+    }
+
+    bool isIntersect(double minValOfParamT) const {
+        if (t > 0 && t < minValOfParamT) {
+            return true;
+        }
+        return false;
     }
 };
 
@@ -58,6 +67,7 @@ public:
         return ret;
     }
 
+    //TODO:
     Color phongLighting(Ray mainRay, Vector intersectionPoint, int reflectionLevel, Object *object) const {
         Color resultColor = object->getColor(intersectionPoint) * object->getAmbient();
 
@@ -99,40 +109,43 @@ public:
         if (reflectionLevel > 0) {
             Vector reflectionRayDirection = mainRay.dir.reflection(normalAtIntersectionPoint);
 
-            Vector reflectedRayStart = intersectionPoint + reflectionRayDirection * 1;
+            Vector reflectedRayStart = intersectionPoint + reflectionRayDirection;
             Ray reflectedRay(reflectedRayStart, reflectionRayDirection);
 
-            int minimumObstacleIndex = INT32_MIN;
-            minimumObstacleIndex = getMinimumObstacleIdx(reflectedRay, minimumObstacleIndex);
+            int closestObstacleIdx = getClosestObstacleIdx(reflectedRay);
 
-            if (minimumObstacleIndex != INT32_MIN) {
-                Ray nextLevel = intersect(reflectedRay, reflectionLevel - 1, scene.objects[minimumObstacleIndex]);
+            if (closestObstacleIdx != MIN_OBSTACLE_DIST) {
+                Ray nextLevel = intersect(reflectedRay, reflectionLevel - 1, scene.objects[closestObstacleIdx]);
                 resultColor = resultColor + nextLevel.color * 1.0 * object->getReflection();
             }
         }
         return resultColor;
     }
 
-    int getMinimumObstacleIdx(const Ray &reflectedRay, int minimumObstacleIndex) const {
+    int getClosestObstacleIdx(const Ray &ray) const {
 
-        minimumObstacleIndex = INT32_MIN;
-        double minimumValueOfParameterT = INT32_MAX;
+        int closestObstacleObjectID = MIN_OBSTACLE_DIST;
+        double minParamT = MAX_OBSTACLE_DIST;
 
-        for (int i = 0; i < scene.numObjects; i++) {
-            Object * obj = scene.objects[i];
+        for (int objectID = 0; objectID < scene.numObjects; objectID++) {
+            Object * obj = scene.objects[objectID];
 
-            Ray intersectOrNot = intersect(reflectedRay, 0, obj);
+            Ray intersectRay = intersect(ray, 0, obj);
 
-            if (intersectOrNot.t > 0 && intersectOrNot.t < minimumValueOfParameterT) {
-                minimumObstacleIndex = i;
-                minimumValueOfParameterT = intersectOrNot.t;
+            if (intersectRay.isIntersect(minParamT)) {
+                closestObstacleObjectID = objectID;
+                minParamT = intersectRay.t;
             }
         }
-        return minimumObstacleIndex;
+        return closestObstacleObjectID;
     }
 
+    // TODO:
     static double getIntersectionParameterT(Ray & ray, Object * object) {
-        if (object->name == "sphere") {
+        if (object->name == "floor") {
+            return -(ray.start.z / ray.dir.z);
+        }
+        else if (object->name == "sphere") {
             auto s = dynamic_cast<Sphere *>(object);
             double a, b, c, d, tem, t, t1, t2, r;
             Vector R0, Rd;
@@ -162,9 +175,6 @@ public:
             }
 
             return t;
-        }
-        else if (object->name == "floor") {
-            return -(ray.start.z / ray.dir.z);
         }
         return 0.0;
     }
@@ -202,30 +212,28 @@ public:
             }
         }
 
-        populatePixelsWithColor(filename, imageWidth, imageHeight, imagePixels);
+        generateBitmap(filename, imageWidth, imageHeight, imagePixels);
     }
 
-    // TODO:
     Color getPixelColor(const Ray &mainRay) const {
-        Color resultColor(0, 0, 0);
-        int closestObstacleIndex = INT32_MIN;
-        double minimumValueOfParameterT = INT32_MAX;
+        int closestObstacleID = MIN_OBSTACLE_DIST;
+        double minParamT = MAX_OBSTACLE_DIST;
 
-        for (int i = 0; i < scene.numObjects; i++) {
-            Ray intersectOrNot = rayTracing.intersect(mainRay, 0, scene.objects[i]);
-            if (intersectOrNot.t > 0 && intersectOrNot.t < minimumValueOfParameterT) {
-                closestObstacleIndex = i;
-                minimumValueOfParameterT = intersectOrNot.t;
+        for (int objectID = 0; objectID < scene.numObjects; objectID++) {
+            Ray intersectRay = rayTracing.intersect(mainRay, 0, scene.objects[objectID]);
+            if (intersectRay.isIntersect(minParamT)) {
+                closestObstacleID = objectID;
+                minParamT = intersectRay.t;
             }
         }
-        if (closestObstacleIndex != INT32_MIN) {
-            Ray finalRayAfterAllLevelReflections = rayTracing.intersect(mainRay, scene.recursionLevels,scene.objects[closestObstacleIndex]);
-            resultColor = finalRayAfterAllLevelReflections.color;
+        if (closestObstacleID != MIN_OBSTACLE_DIST) {
+            Ray intersectRayRecursive = rayTracing.intersect(mainRay, scene.recursionLevels, scene.objects[closestObstacleID]);
+            return intersectRayRecursive.color;
         }
-        return resultColor;
+        return {0, 0, 0};
     }
 
-    static void populatePixelsWithColor(const std::string & filename, double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
+    static void generateBitmap(const std::string & filename, double imageWidth, double imageHeight, const std::vector<std::vector<Color>> &frame) {
         bitmap_image image((unsigned int)imageWidth, (unsigned int)imageHeight);
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
