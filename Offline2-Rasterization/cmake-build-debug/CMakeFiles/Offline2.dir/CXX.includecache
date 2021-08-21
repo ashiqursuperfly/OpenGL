@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_color.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_color.h
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_input_handler.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_input_handler.h
 1605103_vector.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_vector.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_vector.h
 1605103_matrix.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_matrix.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_matrix.h
 fstream
 -
 stack
@@ -22,17 +22,17 @@ iomanip
 string
 -
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_matrix.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_matrix.h
 vector
 -
 iostream
 -
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_triangle.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_triangle.h
 1605103_color.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_color.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_color.h
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_util.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_util.h
 random
 -
 iostream
@@ -42,7 +42,7 @@ fstream
 iterator
 -
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_vector.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_vector.h
 fstream
 -
 cmath
@@ -50,15 +50,15 @@ cmath
 iostream
 -
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_zbuffer.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_zbuffer.h
 1605103_util.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_util.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_util.h
 1605103_triangle.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_triangle.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_triangle.h
 bitmap_image.hpp
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/bitmap_image.hpp
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/bitmap_image.hpp
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/bitmap_image.hpp
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/bitmap_image.hpp
 algorithm
 -
 cmath
@@ -76,9 +76,9 @@ limits
 string
 -
 
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/main.cpp
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/main.cpp
 headers/1605103_input_handler.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_input_handler.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_input_handler.h
 headers/1605103_zbuffer.h
-/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/headers/1605103_zbuffer.h
+/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/headers/1605103_zbuffer.h
 

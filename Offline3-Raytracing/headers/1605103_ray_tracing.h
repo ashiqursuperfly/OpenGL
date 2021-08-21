@@ -85,7 +85,7 @@ public:
             }
 
             if (!isOccluded) {
-                double lightIntensity = 1;
+                double lightIntensity = 5;
                 double lambertValue = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection;
                 double phongValue = std::max(ray.dir.dot(R), 0.0);

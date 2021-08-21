@@ -88,9 +88,24 @@ public:
         for (int i = 0; i < screenHeight; i++) {
             zBuffer.push_back(rowZ);
         }
-
-        std::vector<Color> rowP((int)screenWidth, Color(0, 0, 0));
         for (int i = 0; i < screenHeight; i++) {
+            std::vector<Color> rowP;
+            int r = 59;
+            int g = 191;
+            int b = 119;
+            // 68, 206, 227
+            int cx = ceil(screenWidth / 68);
+            int cy = ceil(screenWidth / 206);
+            int cz = ceil(screenWidth / 227);
+
+            for (int j = 0; j < screenWidth; j++) {
+                rowP.emplace_back(Color(r, g, b));
+                if (j % 10 == 0) {
+                    r = std::min((r + cx), 68);
+                    g = std::min((g + cy), 206);
+                    b = std::min((b + cz), 227);
+                }
+            }
             pixelBuffer.push_back(rowP);
         }
     }
@@ -141,12 +156,14 @@ public:
         else if (t.p1.y <= yScanline && t.p2.y >= yScanline) {
             result.emplace_back(std::pair<Vector, Vector>(t.p2, t.p1));
         }
+
         if (t.p2.y >= yScanline && t.p3.y <= yScanline) {
             result.emplace_back(std::pair<Vector, Vector>(t.p2, t.p3));
         }
         else if ((t.p2.y <= yScanline && t.p3.y >= yScanline)) {
             result.emplace_back(std::pair<Vector, Vector>(t.p3, t.p2));
         }
+
         if ((t.p1.y >= yScanline && t.p3.y <= yScanline)) {
             result.emplace_back(std::pair<Vector, Vector>(t.p1, t.p3));
         }
@@ -173,17 +190,17 @@ public:
                     continue;
                 }
 
-                auto p1 = edges.at(0);
-                auto p2 = edges.at(1);
+                auto e1 = edges.at(0);
+                auto e2 = edges.at(1);
 
-                double m1 = (yScanline - p1.first.y)/(p1.second.y - p1.first.y);
-                double za = p1.first.z + m1 * (p1.second.z - p1.first.z);
+                double m1 = (yScanline - e1.first.y) / (e1.second.y - e1.first.y);
+                double za = e1.first.z + m1 * (e1.second.z - e1.first.z);
 
-                double m2 = (yScanline - p2.first.y)/(p2.second.y - p2.first.y);
-                double zb = p2.first.z + m2 * (p2.second.z - p2.first.z);
+                double m2 = (yScanline - e2.first.y) / (e2.second.y - e2.first.y);
+                double zb = e2.first.z + m2 * (e2.second.z - e2.first.z);
 
-                double xa = p1.first.x + m1 * (p1.second.x - p1.first.x);
-                double xb = p2.first.x + m2 * (p2.second.x - p2.first.x);
+                double xa = e1.first.x + m1 * (e1.second.x - e1.first.x);
+                double xb = e2.first.x + m2 * (e2.second.x - e2.first.x);
 
                 if (xb < xa) {
                     double temp = xa;

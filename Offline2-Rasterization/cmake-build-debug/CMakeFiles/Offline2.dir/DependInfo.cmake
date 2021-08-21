@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/main.cpp" "/home/ashiq/Workspaces/Level 4 Term 1/Graphics/Graphics-Offlines/Offline2-Rasterization/cmake-build-debug/CMakeFiles/Offline2.dir/main.cpp.o"
+  "/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/main.cpp" "/home/ashiq/Documents/Workspaces/OpenGL/Offline2-Rasterization/cmake-build-debug/CMakeFiles/Offline2.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
