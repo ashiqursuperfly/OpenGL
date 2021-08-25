@@ -20,6 +20,7 @@ public:
     Vector start, dir;
     Color color;
     double t;
+    bool testDisableMirrorReflection;
 
     Ray() {
         t = -MIN_OBSTACLE_DIST;
@@ -29,6 +30,7 @@ public:
         start = startVector;
         dir = direction;
         t = -MIN_OBSTACLE_DIST;
+        testDisableMirrorReflection = false;
     }
 };
 
@@ -48,7 +50,7 @@ public:
         result.color = object->getColor(intersectionPoint) * object->getAmbient();
 
         if (result.t < 0) return result;
-        if (recursionLevel < 1) return result;
+        if (recursionLevel < 1 && ray.testDisableMirrorReflection) return result;
 
         Color finalColor = phongLighting(object, ray, intersectionPoint, recursionLevel);
         result.color = finalColor;
@@ -77,6 +79,7 @@ public:
             bool isOccluded = false;
 
             for (int i=0; i < scene.numObjects; i++) {
+                lightRayToObject.testDisableMirrorReflection= true;
                 Ray interceptResult = intersect(lightRayToObject, 0, scene.objects[i]);
                 if (isIntersect(interceptResult, lightToObjectDistance)) {
                     isOccluded = true;
@@ -85,13 +88,12 @@ public:
             }
 
             if (!isOccluded) {
-                double lightIntensity = 5;
                 double lambertValue = std::max(lightRayDirection.dot(normalAtIntersectionPoint), 0.0);
                 Vector R = normalAtIntersectionPoint * 2.0 * lightRayDirection.dot(normalAtIntersectionPoint) - lightRayDirection;
-                double phongValue = std::max(ray.dir.dot(R), 0.0);
+                double phongValue = std::max(std::abs(ray.dir.dot(R)), 0.0);
 
-                Color diffuseComponent = object->getColor(intersectionPoint) * (lightIntensity * lambertValue * object->getDiffuse());
-                Color specularComponent = light.color * (lightIntensity * pow(phongValue, object->getShine()) * object->getSpecular());
+                Color diffuseComponent = (light.color * lambertValue * object->getDiffuse()) * object->getColor(intersectionPoint);
+                Color specularComponent = light.color * object->getColor(intersectionPoint) *  object->getSpecular() * pow(phongValue, object->getShine());
 
                 resultColor = resultColor + diffuseComponent + specularComponent;
             }

@@ -64,8 +64,8 @@ public:
         return shine;
     }
 
-    void setShine(int shine) {
-        this->shine = shine;
+    void setShine(int s) {
+        this->shine = s;
     }
 
     virtual void draw() const = 0;

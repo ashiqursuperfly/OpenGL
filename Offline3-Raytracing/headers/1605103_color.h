@@ -37,6 +37,14 @@ public:
         return result;
     }
 
+    Color operator*(const Color &color) const{
+        Color result;
+        result.r = r * color.r;
+        result.g = g * color.g;
+        result.b = b * color.b;
+        return result;
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Color &t) {
         os <<"("<< t.r << ", " << t.g << ", " << t.b << ")" << std::endl;
         return os;
